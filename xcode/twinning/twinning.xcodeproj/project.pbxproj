@@ -1,0 +1,370 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A31C02CD1ECAD8E2003B542B /* vlog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A31C02CC1ECAD8E2003B542B /* vlog.cpp */; };
+		A31C02D61ECBE6AB003B542B /* cfg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A31C02D51ECBE6AB003B542B /* cfg.cpp */; };
+		A31C02E81ECBF35E003B542B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A31C02E71ECBF35E003B542B /* main.cpp */; };
+		A31C02ED1ECC9251003B542B /* jsoncpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A31C02EC1ECC9251003B542B /* jsoncpp.cpp */; };
+		A31C02FA1ECECC3C003B542B /* gadget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A31C02F91ECECC3C003B542B /* gadget.cpp */; };
+		A33BAD851EC9ED1000FA0856 /* agent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A33BAD841EC9ED1000FA0856 /* agent.cpp */; };
+		A3E5B7DB1ED405A7008E23BA /* input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A3E5B7DA1ED405A7008E23BA /* input.cpp */; };
+		A3E5B7DE1ED53152008E23BA /* cmd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A3E5B7DD1ED53152008E23BA /* cmd.cpp */; };
+		A3E5B7E71ED682FB008E23BA /* libconfuse.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3E5B7E41ED682FB008E23BA /* libconfuse.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		A3E5B7E81ED682FB008E23BA /* libwmcommon.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A3E5B7E51ED682FB008E23BA /* libwmcommon.dylib */; };
+		A3E5B7E91ED682FB008E23BA /* libwmcore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A3E5B7E61ED682FB008E23BA /* libwmcore.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A33BAD781EC9ECF800FA0856 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A31C02CB1ECAD23C003B542B /* cfg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cfg.h; path = ../../../src/cfg.h; sourceTree = "<group>"; };
+		A31C02CC1ECAD8E2003B542B /* vlog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vlog.cpp; path = ../../../src/vlog.cpp; sourceTree = "<group>"; };
+		A31C02CE1ECAD8EC003B542B /* vlog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vlog.h; path = ../../../src/vlog.h; sourceTree = "<group>"; };
+		A31C02D01ECB43EA003B542B /* friend.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = friend.h; path = ../../../src/friend.h; sourceTree = "<group>"; };
+		A31C02D51ECBE6AB003B542B /* cfg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cfg.cpp; path = ../../../src/cfg.cpp; sourceTree = "<group>"; };
+		A31C02D81ECBEC0E003B542B /* gadget.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = gadget.h; path = ../../../src/gadget.h; sourceTree = "<group>"; };
+		A31C02E71ECBF35E003B542B /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../../src/main.cpp; sourceTree = "<group>"; };
+		A31C02EC1ECC9251003B542B /* jsoncpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = jsoncpp.cpp; path = ../../../src/json/jsoncpp.cpp; sourceTree = "<group>"; };
+		A31C02EE1ECC92AF003B542B /* json-forwards.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "json-forwards.h"; path = "../../../src/json/json/json-forwards.h"; sourceTree = "<group>"; };
+		A31C02EF1ECC92AF003B542B /* json.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = json.h; path = ../../../src/json/json/json.h; sourceTree = "<group>"; };
+		A31C02F91ECECC3C003B542B /* gadget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gadget.cpp; path = ../../../src/gadget.cpp; sourceTree = "<group>"; };
+		A33BAD7A1EC9ECF800FA0856 /* twinning */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = twinning; sourceTree = BUILT_PRODUCTS_DIR; };
+		A33BAD841EC9ED1000FA0856 /* agent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = agent.cpp; path = ../../../src/agent.cpp; sourceTree = "<group>"; };
+		A33BAD881EC9ED4700FA0856 /* agent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = agent.h; path = ../../../src/agent.h; sourceTree = "<group>"; };
+		A3E5B7D91ED3CE06008E23BA /* input.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = input.h; path = ../../../src/input.h; sourceTree = "<group>"; };
+		A3E5B7DA1ED405A7008E23BA /* input.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = input.cpp; path = ../../../src/input.cpp; sourceTree = "<group>"; };
+		A3E5B7DC1ED5302C008E23BA /* cmd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cmd.h; path = ../../../src/cmd.h; sourceTree = "<group>"; };
+		A3E5B7DD1ED53152008E23BA /* cmd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cmd.cpp; path = ../../../src/cmd.cpp; sourceTree = "<group>"; };
+		A3E5B7E01ED682B4008E23BA /* confuse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = confuse.h; path = ../../../deps/include/confuse.h; sourceTree = "<group>"; };
+		A3E5B7E11ED682B4008E23BA /* whisper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = whisper.h; path = ../../../deps/include/whisper.h; sourceTree = "<group>"; };
+		A3E5B7E21ED682CA008E23BA /* user.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = user.h; path = ../../../src/user.h; sourceTree = "<group>"; };
+		A3E5B7E41ED682FB008E23BA /* libconfuse.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libconfuse.a; path = ../../deps/libs/libconfuse.a; sourceTree = "<group>"; };
+		A3E5B7E51ED682FB008E23BA /* libwmcommon.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwmcommon.dylib; path = ../../deps/libs/libwmcommon.dylib; sourceTree = "<group>"; };
+		A3E5B7E61ED682FB008E23BA /* libwmcore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwmcore.dylib; path = ../../deps/libs/libwmcore.dylib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A33BAD771EC9ECF800FA0856 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3E5B7E71ED682FB008E23BA /* libconfuse.a in Frameworks */,
+				A3E5B7E81ED682FB008E23BA /* libwmcommon.dylib in Frameworks */,
+				A3E5B7E91ED682FB008E23BA /* libwmcore.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A31C02EA1ECC9235003B542B /* json */ = {
+			isa = PBXGroup;
+			children = (
+				A31C02EE1ECC92AF003B542B /* json-forwards.h */,
+				A31C02EF1ECC92AF003B542B /* json.h */,
+				A31C02EC1ECC9251003B542B /* jsoncpp.cpp */,
+			);
+			name = json;
+			sourceTree = "<group>";
+		};
+		A33BAD711EC9ECF800FA0856 = {
+			isa = PBXGroup;
+			children = (
+				A33BAD7C1EC9ECF800FA0856 /* twinning */,
+				A33BAD7B1EC9ECF800FA0856 /* Products */,
+				A3E5B7E31ED682FB008E23BA /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		A33BAD7B1EC9ECF800FA0856 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A33BAD7A1EC9ECF800FA0856 /* twinning */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A33BAD7C1EC9ECF800FA0856 /* twinning */ = {
+			isa = PBXGroup;
+			children = (
+				A3E5B7DF1ED68262008E23BA /* deps */,
+				A31C02EA1ECC9235003B542B /* json */,
+				A33BAD871EC9ED3700FA0856 /* header */,
+				A33BAD861EC9ED2E00FA0856 /* src */,
+			);
+			path = twinning;
+			sourceTree = "<group>";
+		};
+		A33BAD861EC9ED2E00FA0856 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A31C02CC1ECAD8E2003B542B /* vlog.cpp */,
+				A33BAD841EC9ED1000FA0856 /* agent.cpp */,
+				A31C02D51ECBE6AB003B542B /* cfg.cpp */,
+				A31C02E71ECBF35E003B542B /* main.cpp */,
+				A31C02F91ECECC3C003B542B /* gadget.cpp */,
+				A3E5B7DA1ED405A7008E23BA /* input.cpp */,
+				A3E5B7DD1ED53152008E23BA /* cmd.cpp */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		A33BAD871EC9ED3700FA0856 /* header */ = {
+			isa = PBXGroup;
+			children = (
+				A3E5B7E21ED682CA008E23BA /* user.h */,
+				A31C02CE1ECAD8EC003B542B /* vlog.h */,
+				A33BAD881EC9ED4700FA0856 /* agent.h */,
+				A31C02CB1ECAD23C003B542B /* cfg.h */,
+				A31C02D01ECB43EA003B542B /* friend.h */,
+				A31C02D81ECBEC0E003B542B /* gadget.h */,
+				A3E5B7D91ED3CE06008E23BA /* input.h */,
+				A3E5B7DC1ED5302C008E23BA /* cmd.h */,
+			);
+			name = header;
+			sourceTree = "<group>";
+		};
+		A3E5B7DF1ED68262008E23BA /* deps */ = {
+			isa = PBXGroup;
+			children = (
+				A3E5B7E01ED682B4008E23BA /* confuse.h */,
+				A3E5B7E11ED682B4008E23BA /* whisper.h */,
+			);
+			name = deps;
+			sourceTree = "<group>";
+		};
+		A3E5B7E31ED682FB008E23BA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A3E5B7E41ED682FB008E23BA /* libconfuse.a */,
+				A3E5B7E51ED682FB008E23BA /* libwmcommon.dylib */,
+				A3E5B7E61ED682FB008E23BA /* libwmcore.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A33BAD791EC9ECF800FA0856 /* twinning */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A33BAD811EC9ECF800FA0856 /* Build configuration list for PBXNativeTarget "twinning" */;
+			buildPhases = (
+				A33BAD761EC9ECF800FA0856 /* Sources */,
+				A33BAD771EC9ECF800FA0856 /* Frameworks */,
+				A33BAD781EC9ECF800FA0856 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = twinning;
+			productName = twinning;
+			productReference = A33BAD7A1EC9ECF800FA0856 /* twinning */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A33BAD721EC9ECF800FA0856 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = whisper;
+				TargetAttributes = {
+					A33BAD791EC9ECF800FA0856 = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = A33BAD751EC9ECF800FA0856 /* Build configuration list for PBXProject "twinning" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A33BAD711EC9ECF800FA0856;
+			productRefGroup = A33BAD7B1EC9ECF800FA0856 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A33BAD791EC9ECF800FA0856 /* twinning */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A33BAD761EC9ECF800FA0856 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3E5B7DB1ED405A7008E23BA /* input.cpp in Sources */,
+				A33BAD851EC9ED1000FA0856 /* agent.cpp in Sources */,
+				A31C02FA1ECECC3C003B542B /* gadget.cpp in Sources */,
+				A31C02CD1ECAD8E2003B542B /* vlog.cpp in Sources */,
+				A3E5B7DE1ED53152008E23BA /* cmd.cpp in Sources */,
+				A31C02E81ECBF35E003B542B /* main.cpp in Sources */,
+				A31C02ED1ECC9251003B542B /* jsoncpp.cpp in Sources */,
+				A31C02D61ECBE6AB003B542B /* cfg.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A33BAD7F1EC9ECF800FA0856 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				BUNDLE_LOADER = "";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../../deps/libs";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../deps/include";
+				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/../../deps/libs";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../deps/libs";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		A33BAD801EC9ECF800FA0856 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				BUNDLE_LOADER = "";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../../deps/libs";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../deps/include";
+				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/../../deps/libs";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../deps/libs";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		A33BAD821EC9ECF800FA0856 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEPLOYMENT_LOCATION = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A33BAD831EC9ECF800FA0856 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEPLOYMENT_LOCATION = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A33BAD751EC9ECF800FA0856 /* Build configuration list for PBXProject "twinning" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A33BAD7F1EC9ECF800FA0856 /* Debug */,
+				A33BAD801EC9ECF800FA0856 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A33BAD811EC9ECF800FA0856 /* Build configuration list for PBXNativeTarget "twinning" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A33BAD821EC9ECF800FA0856 /* Debug */,
+				A33BAD831EC9ECF800FA0856 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A33BAD721EC9ECF800FA0856 /* Project object */;
+}
