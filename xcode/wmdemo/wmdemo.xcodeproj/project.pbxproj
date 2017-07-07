@@ -20,6 +20,11 @@
 		A33C11511F0F26FD0068DE6C /* libwmcore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A33C114D1F0F26FD0068DE6C /* libwmcore.dylib */; };
 		A33C11521F0F26FD0068DE6C /* libwmsession.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A33C114E1F0F26FD0068DE6C /* libwmsession.dylib */; };
 		A379E4BE1F0F59D1009726A9 /* session.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A379E4BD1F0F59D1009726A9 /* session.cpp */; };
+		A379E4C71F0F7921009726A9 /* lock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A379E4C31F0F7921009726A9 /* lock.cpp */; };
+		A379E4C81F0F7921009726A9 /* mp4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A379E4C41F0F7921009726A9 /* mp4.cpp */; };
+		A379E4C91F0F7921009726A9 /* rtp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A379E4C51F0F7921009726A9 /* rtp.cpp */; };
+		A379E4CA1F0F7921009726A9 /* rwlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A379E4C61F0F7921009726A9 /* rwlock.cpp */; };
+		A379E4CE1F0F895C009726A9 /* libmp4v2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A379E4CD1F0F895C009726A9 /* libmp4v2.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -63,6 +68,15 @@
 		A33C11531F0F2CF80068DE6C /* whisper_session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = whisper_session.h; path = ../../deps/include/whisper_session.h; sourceTree = "<group>"; };
 		A33C11541F0F32120068DE6C /* session.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = session.h; path = ../../src/session.h; sourceTree = "<group>"; };
 		A379E4BD1F0F59D1009726A9 /* session.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = session.cpp; path = ../../../src/session.cpp; sourceTree = "<group>"; };
+		A379E4BF1F0F7914009726A9 /* lock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lock.h; path = ../../src/lock.h; sourceTree = "<group>"; };
+		A379E4C01F0F7914009726A9 /* mp4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mp4.h; path = ../../src/mp4.h; sourceTree = "<group>"; };
+		A379E4C11F0F7914009726A9 /* rtp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rtp.h; path = ../../src/rtp.h; sourceTree = "<group>"; };
+		A379E4C21F0F7914009726A9 /* rwlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rwlock.h; path = ../../src/rwlock.h; sourceTree = "<group>"; };
+		A379E4C31F0F7921009726A9 /* lock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lock.cpp; path = ../../../src/lock.cpp; sourceTree = "<group>"; };
+		A379E4C41F0F7921009726A9 /* mp4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mp4.cpp; path = ../../../src/mp4.cpp; sourceTree = "<group>"; };
+		A379E4C51F0F7921009726A9 /* rtp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = rtp.cpp; path = ../../../src/rtp.cpp; sourceTree = "<group>"; };
+		A379E4C61F0F7921009726A9 /* rwlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = rwlock.cpp; path = ../../../src/rwlock.cpp; sourceTree = "<group>"; };
+		A379E4CD1F0F895C009726A9 /* libmp4v2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmp4v2.a; path = ../../deps/libs/libmp4v2.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A379E4CE1F0F895C009726A9 /* libmp4v2.a in Frameworks */,
 				A33C114F1F0F26FD0068DE6C /* libconfuse.a in Frameworks */,
 				A33C11501F0F26FD0068DE6C /* libwmcommon.dylib in Frameworks */,
 				A33C11511F0F26FD0068DE6C /* libwmcore.dylib in Frameworks */,
@@ -103,6 +118,10 @@
 		A33C111F1F0F24080068DE6C /* src */ = {
 			isa = PBXGroup;
 			children = (
+				A379E4C31F0F7921009726A9 /* lock.cpp */,
+				A379E4C41F0F7921009726A9 /* mp4.cpp */,
+				A379E4C51F0F7921009726A9 /* rtp.cpp */,
+				A379E4C61F0F7921009726A9 /* rwlock.cpp */,
 				A33C113C1F0F24FA0068DE6C /* agent.cpp */,
 				A33C113D1F0F24FA0068DE6C /* cfg.cpp */,
 				A33C113E1F0F24FA0068DE6C /* cmd.cpp */,
@@ -119,6 +138,10 @@
 		A33C11271F0F24160068DE6C /* headers */ = {
 			isa = PBXGroup;
 			children = (
+				A379E4BF1F0F7914009726A9 /* lock.h */,
+				A379E4C01F0F7914009726A9 /* mp4.h */,
+				A379E4C11F0F7914009726A9 /* rtp.h */,
+				A379E4C21F0F7914009726A9 /* rwlock.h */,
 				A33C11341F0F24E90068DE6C /* agent.h */,
 				A33C11351F0F24E90068DE6C /* cfg.h */,
 				A33C11361F0F24E90068DE6C /* cmd.h */,
@@ -155,6 +178,7 @@
 		A33C114A1F0F26FD0068DE6C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A379E4CD1F0F895C009726A9 /* libmp4v2.a */,
 				A33C114B1F0F26FD0068DE6C /* libconfuse.a */,
 				A33C114C1F0F26FD0068DE6C /* libwmcommon.dylib */,
 				A33C114D1F0F26FD0068DE6C /* libwmcore.dylib */,
@@ -222,12 +246,16 @@
 			files = (
 				A33C11471F0F24FA0068DE6C /* input.cpp in Sources */,
 				A33C11441F0F24FA0068DE6C /* cfg.cpp in Sources */,
+				A379E4CA1F0F7921009726A9 /* rwlock.cpp in Sources */,
 				A379E4BE1F0F59D1009726A9 /* session.cpp in Sources */,
 				A33C11491F0F24FA0068DE6C /* vlog.cpp in Sources */,
 				A33C11451F0F24FA0068DE6C /* cmd.cpp in Sources */,
 				A33C11311F0F24BA0068DE6C /* jsoncpp.cpp in Sources */,
+				A379E4C91F0F7921009726A9 /* rtp.cpp in Sources */,
+				A379E4C81F0F7921009726A9 /* mp4.cpp in Sources */,
 				A33C11431F0F24FA0068DE6C /* agent.cpp in Sources */,
 				A33C11481F0F24FA0068DE6C /* main.cpp in Sources */,
+				A379E4C71F0F7921009726A9 /* lock.cpp in Sources */,
 				A33C11461F0F24FA0068DE6C /* gadget.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -797,3 +797,8 @@ void CAgent::refreshPeerGadgets(void) const
     for (it = mPeers.begin(); it != mPeers.end(); ++it)
         refreshPeerGadgets(it->first);
 }
+
+void CAgent::sendVideoFrame(const uint8_t *frame, int len)
+{
+    //TODO;
+}

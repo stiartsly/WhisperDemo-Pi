@@ -17,6 +17,10 @@ add_executable(wmdemo
                cmd.cpp
                agent.cpp
                session.cpp
+               lock.cpp
+               rwlock.cpp
+               rtp.cpp
+               mp4.cpp
                main.cpp
                json/jsoncpp.cpp)
 
@@ -26,6 +30,7 @@ target_include_directories(wmdemo PRIVATE
 
 target_link_libraries(wmdemo
                confuse
+               mp4v2
                wmcommon 
                wmcore
                wmsession)

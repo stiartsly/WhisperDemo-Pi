@@ -1,6 +1,7 @@
 #ifndef __DEVICE_H__
 #define __DEVICE_H__
 
+#include <cstdint>
 #include <cstddef>
 #include <cassert>
 #include <memory>
@@ -83,6 +84,8 @@ public:
     void handleStatus(const std::string &peerName, const std::map<std::string, GadgetValue>&);
     void handleSync(const std::string &peerName, const std::map<std::string, GadgetValue>&);
     void handleModify(const std::string &peerName, const std::map<std::string, GadgetValue>&);
+
+    void sendVideoFrame(const uint8_t*, int);
 
 private:
     void refreshPeerGadgets(const std::string &peerName) const;
