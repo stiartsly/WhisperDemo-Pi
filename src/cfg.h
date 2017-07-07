@@ -41,6 +41,10 @@ public:
         return mTrustStore->c_str();
     }
 
+    const char *turnHost(void) const {
+        return mTurnServer->c_str();
+    }
+
     const char *username(void) const {
         return mUsername->c_str();
     }

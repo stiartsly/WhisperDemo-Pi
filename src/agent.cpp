@@ -2,6 +2,7 @@
 #include <cassert>
 #include <memory>
 #include "whisper.h"
+#include "whisper_session.h"
 #include "vlog.h"
 #include "cfg.h"
 #include "agent.h"
@@ -292,6 +293,30 @@ void onFriendMessage(Whisper *whisper, const char *from, const char *msg,
 }
 
 static
+void onSessionRequestCallback(Whisper *whisper, const char *from,
+                              const char *sdp, size_t len, void *context)
+{
+    CAgent* agent = static_cast<CAgent*>(context);
+    assert(agent);
+
+    vlogI("Agent received session request from %s", from);
+    vlogI("where sdp is:%s\n", sdp);
+
+    std::size_t found = std::string(sdp).find("whisper-ice-session");
+    if (found == std::string::npos) {
+        vlogE("Agent not supported session except for ice");
+        return;
+    }
+
+    std::shared_ptr<std::string> spFrom(new std::string(from));
+    std::shared_ptr<std::string> spSdp(new std::string(sdp));
+    std::shared_ptr<CSession> sess(new CSession(spFrom, spSdp));
+
+    if (sess && sess->start(whisper))
+        agent->addSession(separator(from).userid(), sess);
+}
+
+static
 void logPrint(const char *format, va_list args)
 {
     logMsg(VLOG_INFO, format, args);
@@ -338,6 +363,33 @@ bool CAgent::setup(const std::shared_ptr<CConfig> cfg)
     mWhisper = whisper_new(&options, &callbacks, this);
     if (!mWhisper) {
         vlogE("Create whisper instance failed: 0x%x", whisper_get_error());
+        return false;
+    }
+
+    WhisperSessionOptions wsopts = {
+        .transports = WhisperTransportType_ICE,
+        .stun_host = cfg->turnHost(),
+        .stun_port = NULL,
+        .turn_host = cfg->turnHost(),
+        .turn_port = NULL,
+        .turn_username = cfg->username(),
+        .turn_password = cfg->password(),
+        .udp_host = NULL,
+        .udp_port = NULL,
+        .udp_external_host = NULL,
+        .udp_external_port = NULL,
+        .tcp_host = NULL,
+        .tcp_port = NULL,
+        .tcp_external_host = NULL,
+        .tcp_external_port = NULL
+    };
+
+    int rc;
+
+    rc = whisper_session_init(mWhisper, &wsopts, onSessionRequestCallback, this);
+    if (rc < 0) {
+        vlogE("Initialize session extension failed: 0x%x", whisper_get_error());
+        whisper_kill(mWhisper);
         return false;
     }
 
@@ -466,6 +518,16 @@ void CAgent::updatePeer(const std::string &name, std::shared_ptr<std::string> pr
         if (presence->compare("online") == 0)
             refreshPeerGadgets(name);
     }
+}
+
+void CAgent::addSession(const std::string &name, std::shared_ptr<CSession> sess)
+{
+    if (!sess) return;
+
+    std::map<std::string, CPeer>::iterator it;
+    it = mPeers.find(name);
+    if (it != mPeers.end())
+        it->second.addSession(sess);
 }
 
 void CAgent::reqAddPeer(const std::string &name) const

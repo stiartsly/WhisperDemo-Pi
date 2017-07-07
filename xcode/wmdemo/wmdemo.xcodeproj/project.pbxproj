@@ -19,6 +19,7 @@
 		A33C11501F0F26FD0068DE6C /* libwmcommon.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A33C114C1F0F26FD0068DE6C /* libwmcommon.dylib */; };
 		A33C11511F0F26FD0068DE6C /* libwmcore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A33C114D1F0F26FD0068DE6C /* libwmcore.dylib */; };
 		A33C11521F0F26FD0068DE6C /* libwmsession.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A33C114E1F0F26FD0068DE6C /* libwmsession.dylib */; };
+		A379E4BE1F0F59D1009726A9 /* session.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A379E4BD1F0F59D1009726A9 /* session.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -59,6 +60,9 @@
 		A33C114C1F0F26FD0068DE6C /* libwmcommon.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwmcommon.dylib; path = ../../deps/libs/libwmcommon.dylib; sourceTree = "<group>"; };
 		A33C114D1F0F26FD0068DE6C /* libwmcore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwmcore.dylib; path = ../../deps/libs/libwmcore.dylib; sourceTree = "<group>"; };
 		A33C114E1F0F26FD0068DE6C /* libwmsession.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwmsession.dylib; path = ../../deps/libs/libwmsession.dylib; sourceTree = "<group>"; };
+		A33C11531F0F2CF80068DE6C /* whisper_session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = whisper_session.h; path = ../../deps/include/whisper_session.h; sourceTree = "<group>"; };
+		A33C11541F0F32120068DE6C /* session.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = session.h; path = ../../src/session.h; sourceTree = "<group>"; };
+		A379E4BD1F0F59D1009726A9 /* session.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = session.cpp; path = ../../../src/session.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +110,7 @@
 				A33C11401F0F24FA0068DE6C /* input.cpp */,
 				A33C11411F0F24FA0068DE6C /* main.cpp */,
 				A33C11421F0F24FA0068DE6C /* vlog.cpp */,
+				A379E4BD1F0F59D1009726A9 /* session.cpp */,
 			);
 			name = src;
 			path = wmdemo;
@@ -122,6 +127,7 @@
 				A33C11391F0F24E90068DE6C /* input.h */,
 				A33C113A1F0F24E90068DE6C /* user.h */,
 				A33C113B1F0F24E90068DE6C /* vlog.h */,
+				A33C11541F0F32120068DE6C /* session.h */,
 			);
 			name = headers;
 			sourceTree = "<group>";
@@ -139,6 +145,7 @@
 		A33C112A1F0F24980068DE6C /* deps */ = {
 			isa = PBXGroup;
 			children = (
+				A33C11531F0F2CF80068DE6C /* whisper_session.h */,
 				A33C112B1F0F24A90068DE6C /* confuse.h */,
 				A33C112C1F0F24A90068DE6C /* whisper.h */,
 			);
@@ -215,6 +222,7 @@
 			files = (
 				A33C11471F0F24FA0068DE6C /* input.cpp in Sources */,
 				A33C11441F0F24FA0068DE6C /* cfg.cpp in Sources */,
+				A379E4BE1F0F59D1009726A9 /* session.cpp in Sources */,
 				A33C11491F0F24FA0068DE6C /* vlog.cpp in Sources */,
 				A33C11451F0F24FA0068DE6C /* cmd.cpp in Sources */,
 				A33C11311F0F24BA0068DE6C /* jsoncpp.cpp in Sources */,
@@ -355,6 +363,7 @@
 				A33C11261F0F24080068DE6C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

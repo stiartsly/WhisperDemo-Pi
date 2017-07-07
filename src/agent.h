@@ -9,6 +9,7 @@
 
 #include "whisper.h"
 #include "gadget.h"
+#include "session.h"
 
 class CConfig;
 class CUser;
@@ -26,9 +27,12 @@ public:
     std::shared_ptr<CGadget> getGadget(const std::string &name) const;
     void addGadget(CAgent* agent, const std::string &name, const GadgetValue &value);
 
+    void addSession(std::shared_ptr<CSession> session) { mSession = session; }
+
 private:
     std::shared_ptr<CFriend> mFriend;
     std::map<std::string, std::shared_ptr<CGadget>> mGadgets;
+    std::shared_ptr<CSession> mSession;
 };
 
 class CAgent {
@@ -60,6 +64,9 @@ public:
     void delPeer(const std::string &name);
     void updatePeer(const std::string &name, std::shared_ptr<CFriend>);
     void updatePeer(const std::string &name, std::shared_ptr<std::string>);
+
+    // about session.
+    void addSession(const std::string &name, std::shared_ptr<CSession>);
 
     void reqAddPeer(const std::string &name) const;
     void listPeers(bool withGadget = false) const;

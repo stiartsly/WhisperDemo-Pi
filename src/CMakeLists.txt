@@ -16,6 +16,7 @@ add_executable(wmdemo
                gadget.cpp
                cmd.cpp
                agent.cpp
+               session.cpp
                main.cpp
                json/jsoncpp.cpp)
 
