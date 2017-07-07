@@ -9,7 +9,7 @@
 #include "gadget.h"
 
 #include <iostream>
-static const char *confPath = "/twins.conf";
+static const char *confPath = "/wmdemo.conf";
 
 static
 const char *getAppHome(void)
@@ -21,9 +21,9 @@ const char *getAppHome(void)
 static
 void showBanner(void)
 {
-    vlogI("#################################################");
-    vlogI("###         whisper twinnning                 ###");
-    vlogI("#################################################");
+    vlogI("#############################################");
+    vlogI("###         whisper demo on device        ###");
+    vlogI("#############################################");
 }
 
 int main(int argc, char **argv)
