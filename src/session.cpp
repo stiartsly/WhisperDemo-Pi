@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "vlog.h"
 #include "session.h"
 

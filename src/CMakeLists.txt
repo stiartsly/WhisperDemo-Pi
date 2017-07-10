@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.1)
 project(wmdemo)
 
-#add_subdirectory(raspi)
+add_subdirectory(raspi)
 
 include_directories(${CMAKE_SOURCE_DIR}/../deps/include)
 include_directories(${CMAKE_SOURCE_DIR}/../src/json/json)
@@ -28,4 +28,4 @@ set (WMDEMO_SOURCES
         json/jsoncpp.cpp)
 
 add_executable(wmdemo ${WMDEMO_SOURCES})
-target_link_libraries(wmdemo ${WMLIBS} mp4v2)
+target_link_libraries(wmdemo ${WMLIBS} mp4v2 pthread dl)

@@ -5,7 +5,7 @@ SET(COMPILE_DEFINITIONS -Werror)
 include_directories("/opt/vc/include")
 include_directories(${CMAKE_SOURCE_DIR}/../src/raspi})
 
-link_directories(/opt/lib)
+link_directories(/opt/vc/lib)
 
 set (RASPI_SOURCES
         RaspiCamControl.c
