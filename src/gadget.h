@@ -59,6 +59,9 @@ public:
     const std::string &name(void) const { return mName; }
     const GadgetValue &value(void) const { return mValue; }
 
+    virtual bool open(bool readDev) { return true; }
+    virtual void close(void) { }
+
     void query(std::map<std::string, GadgetValue> &result) const {
         result[mName] = mValue;
     }
@@ -91,7 +94,9 @@ public:
     CBulb(CAgent *agent, bool val): CGadget("bulb", agent, val) {}
 
 protected:
+    bool open(bool realDev) override;
     void flip(bool on) override;
+    void close(void) override;
 };
 
 class CTorch: public CGadget {
@@ -99,7 +104,9 @@ public:
     CTorch(CAgent *agent, bool val): CGadget("torch", agent, val) {}
 
 protected:
+    bool open(bool realDev) override;
     void flip(bool on) override;
+    void close(void) override;
 };
 
 class CBrightness: public CGadget {
@@ -107,7 +114,9 @@ public:
     CBrightness(CAgent *agent, float val): CGadget("brightness", agent, val) {}
 
 protected:
+    bool open(bool realDev) override;
     void flip(const float& value) override;
+    void close(void) override;
 };
 
 class CRing: public CGadget {
@@ -115,7 +124,9 @@ public:
     CRing(CAgent *agent, bool val): CGadget("ring", agent, val) {}
 
 protected:
+    bool open(bool realDev) override;
     void flip(bool on) override;
+    void close(void) override;
 };
 
 class CVolume: public CGadget {
@@ -123,7 +134,9 @@ public:
     CVolume(CAgent *agent, float val): CGadget("volume", agent, val) {}
 
 protected:
+    bool open(bool realDev) override;
     void flip(const float& value) override;
+    void close(void) override;
 };
 
 class CCamera: public CGadget {
@@ -131,7 +144,9 @@ public:
     CCamera(CAgent *agent, bool val): CGadget("camera", agent, val) {}
 
 protected:
+    bool open(bool realDev) override;
     void flip(bool on) override;
+    void close(void) override;
 };
 
 #endif /* __GADGET_H__*/

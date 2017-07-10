@@ -45,8 +45,6 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    vlogI("$$$$ dummy: %s", cfg->isDummy() ? "on" : "off");
-
     std::shared_ptr<CInput> input(new CInput());
     if (!input || !input->setup()) {
         vlogE("Setup input error.");

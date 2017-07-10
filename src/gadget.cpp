@@ -136,9 +136,26 @@ void CGadget::status(const std::string &peerName) const
     vlogI("%s %s %s", mName.c_str(), peerName.c_str(), mValue.c_str());
 }
 
+bool CBulb::open(bool realDev)
+{
+    //TODO;
+    return true;
+}
+
 void CBulb::flip(bool on)
 {
     vlogI("Blub turned %s", on ? "on" : "off");
+}
+
+void CBulb::close(void)
+{
+    //TODO;
+}
+
+bool CTorch::open(bool realDev)
+{
+    //TODO;
+    return true;
 }
 
 void CTorch::flip(bool on)
@@ -146,9 +163,31 @@ void CTorch::flip(bool on)
     vlogI("Torch turned %s", on ? "on": "off");
 }
 
+void CTorch::close(void)
+{
+    //TODO;
+}
+
+bool CBrightness::open(bool realDev)
+{
+    //TODO;
+    return true;
+}
+
 void CBrightness::flip(const float& value)
 {
     vlogI("Brightness changed to %f", value);
+}
+
+void CBrightness::close(void)
+{
+    //TODO;
+}
+
+bool CRing::open(bool realDev)
+{
+    //TODO;
+    return true;
 }
 
 void CRing::flip(bool on)
@@ -156,12 +195,39 @@ void CRing::flip(bool on)
     vlogI("Ring turned %s", on ? "on": "off");
 }
 
+void CRing::close(void)
+{
+    //TODO;
+}
+
+bool CVolume::open(bool realDev)
+{
+    //TODO;
+    return true;
+}
+
 void CVolume::flip(const float& value)
 {
     vlogI("Volume changed to be: %f", value);
 }
 
+void CVolume::close(void)
+{
+    //TODO;
+}
+
+bool CCamera::open(bool realDev)
+{
+    //TODO;
+    return true;
+}
+
 void CCamera::flip(bool on)
 {
     vlogI("camera turned %s", on ? "on": "off");
+}
+
+void CCamera::close(void)
+{
+    //TODO;
 }

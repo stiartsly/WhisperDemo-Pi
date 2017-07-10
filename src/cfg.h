@@ -61,6 +61,11 @@ public:
         return mDeviceId->c_str();
     }
 
+    const char *dylibName(void) const {
+        return NULL;
+        //return "wmdemo_ext.so";
+    }
+
 private:
     std::shared_ptr<std::string> getString(void*, const char* name);
     int getInt(void*, const char* name);

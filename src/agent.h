@@ -46,6 +46,8 @@ public:
         mPeers(),
         mGadgets() {}
 
+    ~CAgent();
+
 public:
     bool setup(std::shared_ptr<CConfig> cfg);
     void run(void);
@@ -91,6 +93,8 @@ private:
     void refreshPeerGadgets(const std::string &peerName) const;
     void refreshPeerGadgets(void) const;
 private:
+    void *mDylib;
+
     Whisper *mWhisper;
 
     bool mIsConnected;

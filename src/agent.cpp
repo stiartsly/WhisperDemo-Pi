@@ -1,6 +1,9 @@
 #include <cstring>
 #include <cassert>
 #include <memory>
+
+#include <dlfcn.h>
+
 #include "whisper.h"
 #include "whisper_session.h"
 #include "vlog.h"
@@ -322,8 +325,35 @@ void logPrint(const char *format, va_list args)
     logMsg(VLOG_INFO, format, args);
 }
 
+CAgent::~CAgent()
+{
+    if (mDylib)
+        dlclose(mDylib);
+}
+
 bool CAgent::setup(const std::shared_ptr<CConfig> cfg)
 {
+    if (cfg->dylibName()) {
+        vlogI("Loading dynamic library: %s", cfg->dylibName());
+        mDylib = dlopen(cfg->dylibName(), RTLD_NOW);
+        if (!mDylib) {
+            vlogE("Loading dynamic library %s error: %s", cfg->dylibName(),
+                dlerror());
+            return false;
+        }
+    }
+
+    std::map<std::string, std::shared_ptr<CGadget>>::const_iterator it;
+    for (it = mGadgets.begin(); it != mGadgets.end(); ++it) {
+        bool succ;
+
+        succ = it->second->open(cfg->dylibName() != NULL);
+        if (!succ) {
+            vlogE("Open gadget %s error.", it->first.c_str());
+            return false;
+        }
+    }
+
     WhisperOptions options = {
         .login = NULL,
         .password = NULL,
@@ -389,7 +419,6 @@ bool CAgent::setup(const std::shared_ptr<CConfig> cfg)
     rc = whisper_session_init(mWhisper, &wsopts, onSessionRequestCallback, this);
     if (rc < 0) {
         vlogE("Initialize session extension failed: 0x%x", whisper_get_error());
-        whisper_kill(mWhisper);
         return false;
     }
 
@@ -760,6 +789,8 @@ void CAgent::handleModify(const std::string &peerName,
 {
     std::map<std::string, GadgetValue>::const_iterator it;
     std::map<std::string, std::shared_ptr<CGadget>>::iterator it1;
+
+    //TODO:
 
     for (it = values.begin(); it != values.end(); ++it) {
         it1 = mGadgets.find(it->first);
