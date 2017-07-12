@@ -1,6 +1,7 @@
 #ifndef __SESSION_H__
 #define __SESSION_H__
 
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -23,7 +24,7 @@ public:
     bool start(Whisper *whisper);
     void close(void);
 
-    void write(const void *buf, size_t len);
+    void write(const uint8_t *buf, size_t len);
 
 private:
     WhisperSession *mSession;

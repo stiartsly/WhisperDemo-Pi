@@ -258,7 +258,7 @@ void streamFwd(void *data, int len, void *argv)
     timeval now;
     gettimeofday(&now, NULL);
 
-    uint32_t ts = now.tv_sec * 1000 + now.tv_usec/1000;
+    uint32_t ts = (uint32_t)(now.tv_sec * 1000 + now.tv_usec/1000);
 
     vlogI("fwd stream data :%d", len);
 

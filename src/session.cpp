@@ -1,4 +1,5 @@
 #include <cstring>
+#include <cstdint>
 
 #include "vlog.h"
 #include "session.h"
@@ -86,10 +87,10 @@ void CSession::close() {
     }
 }
 
-void CSession::write(const void *data, size_t len)
+void CSession::write(const uint8_t *data, size_t len)
 {
     if (mStream < 0) {
-        vlogE("Session not prepared for writing data");
+        //vlogE("Session not prepared for writing data");
         return;
     }
 

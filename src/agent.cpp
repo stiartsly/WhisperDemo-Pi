@@ -831,4 +831,12 @@ void CAgent::refreshPeerGadgets(void) const
 void CAgent::sendVideoFrame(const uint8_t *frame, int len)
 {
     vlogI("CAgent:%s (len:%d)", __FUNCTION__, len);
+
+    std::map<std::string, CPeer>::const_iterator it;
+
+    for (it = mPeers.begin(); it != mPeers.end(); ++it) {
+        std::shared_ptr<CSession> sess = it->second.getSession();
+        if (sess)
+            sess->write(frame, len);
+    }
 }

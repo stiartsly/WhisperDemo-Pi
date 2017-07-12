@@ -30,6 +30,8 @@ public:
 
     void addSession(std::shared_ptr<CSession> session) { mSession = session; }
 
+    std::shared_ptr<CSession> getSession(void) const { return mSession; }
+
 private:
     std::shared_ptr<CFriend> mFriend;
     std::map<std::string, std::shared_ptr<CGadget>> mGadgets;
