@@ -1,0 +1,14 @@
+raspivid -v \
+           -o udp://127.0.0.1:12300  \
+           -w 320 \
+           -h 240 \
+           -pf baseline \
+           -b 90000 \
+           -fps 30 \
+           -t 0 \
+           -n \
+           -sh 50 \
+           -co 50 \
+           -br 50 \
+           -sa 50 \
+           -vs
