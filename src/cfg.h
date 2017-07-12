@@ -13,10 +13,6 @@ public:
         return mLogLevel;
     }
 
-    bool isDummy(void) const {
-        return mDummy;
-    }
-
     const char *logPath(void) const {
         return mLogFile->c_str();
     }
@@ -61,9 +57,12 @@ public:
         return mDeviceId->c_str();
     }
 
+    bool isDummy(void) const {
+        return mDummy;
+    }
+
     const char *dylibName(void) const {
-        return NULL;
-        //return "wmdemo_ext.so";
+        return mDylibName ? mDylibName->c_str() : nullptr;
     }
 
 private:
@@ -84,10 +83,12 @@ private:
     std::shared_ptr<std::string> mDeviceId;
 
     int mLogLevel;
-    bool mDummy;
 
     std::shared_ptr<std::string> mLogFile;
     std::shared_ptr<std::string> mCfgFile;
+
+    bool mDummy;
+    std::shared_ptr<std::string> mDylibName;
 };
 
 #endif /* __CONFIG_H__ */

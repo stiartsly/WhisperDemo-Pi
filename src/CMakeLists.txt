@@ -9,6 +9,7 @@ include_directories(${CMAKE_SOURCE_DIR}/../src/json/json)
 link_directories(${CMAKE_SOURCE_DIR}/../deps/libs)
 
 add_definitions(-std=c++11)
+
 set(cmake_cxx_flag "-DDEBUG=1 -g -O0 -Wall")
 set(WMLIBS confuse wmcommon wmcore wmsession)
 

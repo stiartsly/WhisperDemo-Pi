@@ -1,5 +1,7 @@
 #include <memory>
 #include <string>
+#include <dlfcn.h>
+
 #include "vlog.h"
 #include "agent.h"
 #include "gadget.h"
@@ -136,7 +138,7 @@ void CGadget::status(const std::string &peerName) const
     vlogI("%s %s %s", mName.c_str(), peerName.c_str(), mValue.c_str());
 }
 
-bool CBulb::open(bool realDev)
+bool CBulb::open(void)
 {
     //TODO;
     return true;
@@ -152,23 +154,41 @@ void CBulb::close(void)
     //TODO;
 }
 
-bool CTorch::open(bool realDev)
+bool CTorch::open(void)
 {
-    //TODO;
-    return true;
+    if (mAgent->dylib()) {
+        int (*func)() = NULL;
+
+        func = (int (*)())dlsym(mAgent->dylib(), "matrix_open");
+        return (func() == 0);
+    } else {
+        return true;
+    }
 }
 
 void CTorch::flip(bool on)
 {
-    vlogI("Torch turned %s", on ? "on": "off");
+    if (mAgent->dylib()) {
+        int (*func)() = NULL;
+
+        func = (int (*)())dlsym(mAgent->dylib(), "matrix_flip");
+        (void)func();
+    } else {
+        vlogI("Torch turned %s", on ? "on": "off");
+    }
 }
 
 void CTorch::close(void)
 {
-    //TODO;
+    if (mAgent->dylib()) {
+        void (*func)() = NULL;
+
+        func = (void (*)())dlsym(mAgent->dylib(), "matrix_close");
+        func();
+    }
 }
 
-bool CBrightness::open(bool realDev)
+bool CBrightness::open(void)
 {
     //TODO;
     return true;
@@ -184,7 +204,7 @@ void CBrightness::close(void)
     //TODO;
 }
 
-bool CRing::open(bool realDev)
+bool CRing::open(void)
 {
     //TODO;
     return true;
@@ -200,7 +220,7 @@ void CRing::close(void)
     //TODO;
 }
 
-bool CVolume::open(bool realDev)
+bool CVolume::open(void)
 {
     //TODO;
     return true;
@@ -216,18 +236,36 @@ void CVolume::close(void)
     //TODO;
 }
 
-bool CCamera::open(bool realDev)
+bool CCamera::open(void)
 {
-    //TODO;
-    return true;
+    if (mAgent->dylib() != NULL) {
+        int (*func)() = NULL;
+
+        func = (int (*)())dlsym(mAgent->dylib(), "camera_open");
+        return (func() == 0);
+    } else {
+        return true;
+    }
 }
 
 void CCamera::flip(bool on)
 {
-    vlogI("camera turned %s", on ? "on": "off");
+    if (mAgent->dylib()) {
+        int (*func)() = NULL;
+
+        func = (int (*)())dlsym(mAgent->dylib(), "camera_flip");
+        (void)func();
+    } else {
+        vlogI("camera turned %s", on ? "on": "off");
+    }
 }
 
 void CCamera::close(void)
 {
-    //TODO;
+    if (mAgent->dylib()) {
+        void (*func)() = NULL;
+
+        func = (void (*)())dlsym(mAgent->dylib(), "camera_close");
+        func();
+    }
 }

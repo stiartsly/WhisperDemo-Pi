@@ -39,6 +39,7 @@ private:
 class CAgent {
 public:
     explicit CAgent(std::shared_ptr<CInput> input):
+        mDylib(NULL),
         mWhisper(NULL),
         mIsConnected(false),
         mUser(NULL),
@@ -54,6 +55,8 @@ public:
     void stop(void);
 
     void handleInput(void);
+
+    void *dylib(void) { return mDylib; }
 
     void didConnectionStatusChange(WhisperConnectionStatus status);
     void didReady(void);

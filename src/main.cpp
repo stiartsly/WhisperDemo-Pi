@@ -52,8 +52,8 @@ int main(int argc, char **argv)
     }
 
     std::shared_ptr<CAgent> agent(new CAgent(input));
-    if (!agent || !agent->setup(cfg)) {
-        vlogE("Setup device error. Please check config %s.", confPath);
+    if (!agent) {
+        vlogE("Out of memory!!!");
         return -1;
     }
 
@@ -64,8 +64,13 @@ int main(int argc, char **argv)
     agent->addGadget(std::shared_ptr<CGadget>(new CVolume(agent.get(),0)));
     agent->addGadget(std::shared_ptr<CGadget>(new CCamera(agent.get(), false)));
 
+    if (!agent->setup(cfg)) {
+        vlogE("Setup agent error.", confPath);
+        return -1;
+    }
+
     agent->run();
-    vlogI("whisper twinning exited", argv[0]);
+    vlogI("whisper demo exited", argv[0]);
 
     return 0;
 }

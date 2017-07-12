@@ -347,7 +347,7 @@ bool CAgent::setup(const std::shared_ptr<CConfig> cfg)
     for (it = mGadgets.begin(); it != mGadgets.end(); ++it) {
         bool succ;
 
-        succ = it->second->open(cfg->dylibName() != NULL);
+        succ = it->second->open();
         if (!succ) {
             vlogE("Open gadget %s error.", it->first.c_str());
             return false;

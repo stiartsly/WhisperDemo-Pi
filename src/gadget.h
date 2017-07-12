@@ -59,7 +59,7 @@ public:
     const std::string &name(void) const { return mName; }
     const GadgetValue &value(void) const { return mValue; }
 
-    virtual bool open(bool readDev) { return true; }
+    virtual bool open(void) { return true; }
     virtual void close(void) { }
 
     void query(std::map<std::string, GadgetValue> &result) const {
@@ -83,10 +83,12 @@ protected:
     virtual void flip(bool val) {}
     virtual void flip(const float &val) {}
 
+protected:
+    CAgent *mAgent;
+
 private:
     std::string mName;
     GadgetValue mValue;
-    CAgent *mAgent;
 };
 
 class CBulb: public CGadget {
@@ -94,7 +96,7 @@ public:
     CBulb(CAgent *agent, bool val): CGadget("bulb", agent, val) {}
 
 protected:
-    bool open(bool realDev) override;
+    bool open(void) override;
     void flip(bool on) override;
     void close(void) override;
 };
@@ -104,7 +106,7 @@ public:
     CTorch(CAgent *agent, bool val): CGadget("torch", agent, val) {}
 
 protected:
-    bool open(bool realDev) override;
+    bool open(void) override;
     void flip(bool on) override;
     void close(void) override;
 };
@@ -114,7 +116,7 @@ public:
     CBrightness(CAgent *agent, float val): CGadget("brightness", agent, val) {}
 
 protected:
-    bool open(bool realDev) override;
+    bool open(void) override;
     void flip(const float& value) override;
     void close(void) override;
 };
@@ -124,7 +126,7 @@ public:
     CRing(CAgent *agent, bool val): CGadget("ring", agent, val) {}
 
 protected:
-    bool open(bool realDev) override;
+    bool open(void) override;
     void flip(bool on) override;
     void close(void) override;
 };
@@ -134,7 +136,7 @@ public:
     CVolume(CAgent *agent, float val): CGadget("volume", agent, val) {}
 
 protected:
-    bool open(bool realDev) override;
+    bool open(void) override;
     void flip(const float& value) override;
     void close(void) override;
 };
@@ -144,7 +146,7 @@ public:
     CCamera(CAgent *agent, bool val): CGadget("camera", agent, val) {}
 
 protected:
-    bool open(bool realDev) override;
+    bool open(void) override;
     void flip(bool on) override;
     void close(void) override;
 };

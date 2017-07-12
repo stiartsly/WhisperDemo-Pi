@@ -40,10 +40,10 @@ bool CConfig::load(const std::string &cfgFile)
         CFG_STR("turn.username", NULL, CFGF_NONE),                                                   
         CFG_STR("turn.password", NULL, CFGF_NONE),
         CFG_INT("log_level", 4, CFGF_NONE),
-        CFG_STR("log_file", "twis.log", CFGF_NONE),
-        CFG_STR("data_location", ".twins", CFGF_NONE),
+        CFG_STR("log_file", NULL, CFGF_NONE),
+        CFG_STR("data_location", NULL, CFGF_NONE),
         CFG_STR("deviceid", NULL, CFGF_NONE),
-        CFG_INT("dummy", 0, CFGF_NONE),
+        CFG_STR("run_host", NULL, CFGF_NONE),
         CFG_END()                                                                                    
     };
     cfg_t* cfg;
@@ -70,9 +70,35 @@ bool CConfig::load(const std::string &cfgFile)
     mDeviceId = getString(cfg, "deviceid");
     mLogLevel = getInt(cfg, "log_level");
     mLogFile = getString(cfg, "log_file");
-    mDummy = !!getInt(cfg, "dummy");
+
+    std::shared_ptr<std::string> runHost;
+    runHost = getString(cfg, "run_host");
 
     cfg_free(cfg);
+
+    if (runHost) {
+        if (runHost->compare("raspberrypi") == 0) {
+            mDummy = true;
+            mDylibName = std::shared_ptr<std::string>(new std::string("wmdemo_raspi.so"));
+            if (!mDylibName)
+                return false;
+        }
+        else if (runHost->compare("macos") == 0) {
+            mDummy = false;
+            mDylibName = std::shared_ptr<std::string>(new std::string("wmdemo_macos.so"));
+            if (!mDylibName)
+                return false;
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        mDummy = false;
+        mDylibName = nullptr;
+    }
+
+    printf("<%s> --->", __FUNCTION__);
 
     return (mAppId && mAppKey && mApiServer
         && mMqttServer && mTrustStore
