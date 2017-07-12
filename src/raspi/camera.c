@@ -19,6 +19,15 @@ static int port = 12300;
 static bool running = false;
 static pthread_t camera_thread;
 
+static void (*streamFwdCb)(void *, int, void *) = NULL;
+static void* streamFwdArgv = NULL;
+
+void camera_set_callbacks(void *streamCb, void *context)
+{
+    streamFwdCb = (void (*)(void *, int, void *))streamCb;
+    streamFwdArgv = context;
+}
+
 static
 void *camera_forwarding_routine(void *argv)
 {
@@ -54,7 +63,9 @@ void *camera_forwarding_routine(void *argv)
                 return NULL;
             }
 
-            printf("received data length: %d from %s\n", rc, inet_ntoa(raddr.sin_addr));
+            //printf("received data length: %d from %s\n", rc, inet_ntoa(raddr.sin_addr));
+            if (streamFwdCb)
+                streamFwdCb(buff, rc, streamFwdArgv);
         }
     }
 

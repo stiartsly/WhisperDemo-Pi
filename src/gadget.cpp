@@ -2,7 +2,10 @@
 #include <string>
 #include <dlfcn.h>
 
+#include <sys/time.h>
+
 #include "vlog.h"
+#include "rtp.h"
 #include "agent.h"
 #include "gadget.h"
 
@@ -247,14 +250,47 @@ void CVolume::close(void)
     //TODO;
 }
 
+static
+void streamFwd(void *data, int len, void *argv)
+{
+    CRtp *rtp = static_cast<CRtp*>(argv);
+
+    timeval now;
+    gettimeofday(&now, NULL);
+
+    uint32_t ts = now.tv_sec * 1000 + now.tv_usec/1000;
+
+    vlogI("fwd stream data :%d", len);
+
+    rtp->streamFwd((const uint8_t*)data, len, ts);
+}
+
 bool CCamera::open(void)
 {
-    if (mAgent->dylib() != NULL) {
-        int (*func)() = NULL;
+    mRtp = std::shared_ptr<CRtp>(new CRtp(mAgent));
+    if (!mRtp) {
+        vlogE("Out of memory!!!");
+        return false;
+    }
 
-        func = (int (*)())dlsym(mAgent->dylib(), "camera_open");
-        if (func)
-            return (func() == 0);
+    if (mAgent->dylib() != NULL) {
+        typedef void (*StreamFwdPtr)(void *, void *);
+
+        StreamFwdPtr ptr1 = NULL;
+
+        ptr1 = (StreamFwdPtr)dlsym(mAgent->dylib(), "camera_set_callbacks");
+        if (ptr1)
+            ptr1((void *)streamFwd, mRtp.get());
+        else {
+            vlogE("Can not find symbol stream_set_callbacks");
+            return false;
+        }
+
+        typedef int  (*CameraOpenPtr)(void);
+        CameraOpenPtr ptr2 = NULL;
+        ptr2 = (CameraOpenPtr)dlsym(mAgent->dylib(), "camera_open");
+        if (ptr2)
+            return (ptr2() == 0);
         else {
             vlogE("Can not find func symbol camera_open");
             return false;

@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 
+class CRtp;
 class CAgent;
 
 enum GadgetValueTypes {
@@ -149,6 +150,9 @@ protected:
     bool open(void) override;
     void flip(bool on) override;
     void close(void) override;
+
+private:
+    std::shared_ptr<CRtp> mRtp;
 };
 
 #endif /* __GADGET_H__*/

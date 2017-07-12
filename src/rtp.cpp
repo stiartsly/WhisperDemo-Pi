@@ -75,7 +75,7 @@ int readNalu(const uint8_t* data, int length, int offset, nalu::NaluUnit& nalu)
 }
 }
 
-int CRtpStream::streamOut(const uint8_t* data, int length,  uint32_t timestamp)
+int CRtp::streamFwd(const uint8_t* data, int length,  uint32_t timestamp)
 {
     static uint16_t seqNo = 0;
     nalu::NaluUnit nalu;

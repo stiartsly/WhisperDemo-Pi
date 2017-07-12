@@ -25,16 +25,16 @@ int readNalu(const uint8_t* data, int length, int offset, nalu::NaluUnit& nalu);
 const int maxRtpMtu = 1500;
 const int maxPktMtu = 1400;
 
-class CRtpStream {
+class CRtp{
 public:
-    CRtpStream(std::shared_ptr<CAgent> agent): mAgent(agent) {}
-    ~CRtpStream() {}
+    CRtp(CAgent *agent): mAgent(agent) {}
+    ~CRtp() {}
 
-    int streamOut(const uint8_t*, int, uint32_t);
+    int streamFwd(const uint8_t*, int, uint32_t);
 
 private:
     uint8_t mOutbuf[::maxRtpMtu];
-    std::shared_ptr<CAgent> mAgent;
+    CAgent *mAgent;
 };
 
 #endif

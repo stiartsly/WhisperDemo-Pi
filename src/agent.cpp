@@ -830,5 +830,5 @@ void CAgent::refreshPeerGadgets(void) const
 
 void CAgent::sendVideoFrame(const uint8_t *frame, int len)
 {
-    //TODO;
+    vlogI("CAgent:%s (len:%d)", __FUNCTION__, len);
 }

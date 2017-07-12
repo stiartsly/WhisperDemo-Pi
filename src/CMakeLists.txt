@@ -24,7 +24,6 @@ set (WMDEMO_SOURCES
         lock.cpp
         rwlock.cpp
         rtp.cpp
-        mp4.cpp
         main.cpp
         json/jsoncpp.cpp)
 
