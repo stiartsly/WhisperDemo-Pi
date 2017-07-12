@@ -260,7 +260,7 @@ void streamFwd(void *data, int len, void *argv)
 
     uint32_t ts = (uint32_t)(now.tv_sec * 1000 + now.tv_usec/1000);
 
-    vlogI("fwd stream data :%d", len);
+    //vlogI("fwd stream data :%d", len);
 
     rtp->streamFwd((const uint8_t*)data, len, ts);
 }
