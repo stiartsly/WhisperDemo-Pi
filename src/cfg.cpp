@@ -79,13 +79,13 @@ bool CConfig::load(const std::string &cfgFile)
     if (runHost) {
         if (runHost->compare("raspberrypi") == 0) {
             mDummy = true;
-            mDylibName = std::shared_ptr<std::string>(new std::string("wmdemo_raspi.so"));
+            mDylibName = std::shared_ptr<std::string>(new std::string("libwmdemo_raspi.so"));
             if (!mDylibName)
                 return false;
         }
         else if (runHost->compare("macos") == 0) {
             mDummy = false;
-            mDylibName = std::shared_ptr<std::string>(new std::string("wmdemo_macos.so"));
+            mDylibName = std::shared_ptr<std::string>(new std::string("libwmdemo_macos.so"));
             if (!mDylibName)
                 return false;
         }
@@ -97,8 +97,6 @@ bool CConfig::load(const std::string &cfgFile)
         mDummy = false;
         mDylibName = nullptr;
     }
-
-    printf("<%s> --->", __FUNCTION__);
 
     return (mAppId && mAppKey && mApiServer
         && mMqttServer && mTrustStore

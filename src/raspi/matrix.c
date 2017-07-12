@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <pthread.h>
+
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
 
@@ -25,14 +26,14 @@ void display(uint8_t *buf)
 
 void turnon(void)
 {
-    uint8_t heart[8] = {0x00, 0x66, 0xFF, 0xFF, 0xFF, 0x7E, 0x3C, 0x18};
-    display(heart);
+    uint8_t data[8] = {0x00, 0x66, 0xFF, 0xFF, 0xFF, 0x7E, 0x3C, 0x18};
+    display(data);
 }
 
 void turnoff(void)
 {
-    uint8_t heart[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-    display(heart);
+    uint8_t data[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+    display(data);
 }
 
 static bool matrix_on = false;
@@ -56,6 +57,11 @@ void *matrix_routine(void *argv)
 
 int matrix_open(void)
 {
+    wiringPiSetup();
+    wiringPiSPISetup(0,500000);
+
+    atexit(turnoff);
+
     pthread_attr_t attr;
 
     pthread_attr_init(&attr);

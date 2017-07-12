@@ -334,7 +334,6 @@ CAgent::~CAgent()
 bool CAgent::setup(const std::shared_ptr<CConfig> cfg)
 {
     if (cfg->dylibName()) {
-        vlogI("Loading dynamic library: %s", cfg->dylibName());
         mDylib = dlopen(cfg->dylibName(), RTLD_NOW);
         if (!mDylib) {
             vlogE("Loading dynamic library %s error: %s", cfg->dylibName(),

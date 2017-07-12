@@ -1,4 +1,4 @@
-# wmdemo.so
+# libwmdemo_raspi.so
 
 SET(COMPILE_DEFINITIONS -Werror)
 
@@ -11,8 +11,8 @@ set (RASPI_SOURCES
         camera.c
         matrix.c)
 
-add_library(wmdemo_ext SHARED ${RASPI_SOURCES})
+add_library(wmdemo_raspi SHARED ${RASPI_SOURCES})
 
 set (DEP_LIBS wiringPi)
 
-target_link_libraries(wmdemo_ext ${DEP_LIBS})
+target_link_libraries(wmdemo_raspi ${DEP_LIBS})

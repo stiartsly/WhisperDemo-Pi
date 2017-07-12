@@ -104,7 +104,7 @@ int camera_open(void)
     rc = pthread_create(&camera_thread, &attr, camera_forwarding_routine, (void*)sock);
     if (rc < 0) {
         printf("create camera forwarding thread error :%d\n", rc);
-        clsoe(sock);
+        close(sock);
         return -1;
     }
 

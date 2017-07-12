@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <memory>
 #include <string>
+#include <signal.h>
 #include "vlog.h"
 
 #include "cfg.h"
@@ -26,8 +27,17 @@ void showBanner(void)
     vlogI("#############################################");
 }
 
+static
+void sig_handler(int signo)
+{
+    vlogI("wmdemo exited forcedly");
+    exit(-1);
+}
+
 int main(int argc, char **argv)
 {
+    signal(SIGINT, sig_handler);
+
     showBanner();
 
     const char *appHome;

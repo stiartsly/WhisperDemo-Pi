@@ -160,7 +160,12 @@ bool CTorch::open(void)
         int (*func)() = NULL;
 
         func = (int (*)())dlsym(mAgent->dylib(), "matrix_open");
-        return (func() == 0);
+        if (func)
+            return (func() == 0);
+        else {
+            vlogE("Can not find func symbol matrix_open");
+            return false;
+        }
     } else {
         return true;
     }
@@ -172,7 +177,12 @@ void CTorch::flip(bool on)
         int (*func)() = NULL;
 
         func = (int (*)())dlsym(mAgent->dylib(), "matrix_flip");
-        (void)func();
+        if (func)
+           func();
+        else {
+            vlogE("Can not find func symbol matrix_flip");
+            exit(-1);
+        }
     } else {
         vlogI("Torch turned %s", on ? "on": "off");
     }
@@ -184,7 +194,8 @@ void CTorch::close(void)
         void (*func)() = NULL;
 
         func = (void (*)())dlsym(mAgent->dylib(), "matrix_close");
-        func();
+        if (func)
+            func();
     }
 }
 
@@ -242,7 +253,12 @@ bool CCamera::open(void)
         int (*func)() = NULL;
 
         func = (int (*)())dlsym(mAgent->dylib(), "camera_open");
-        return (func() == 0);
+        if (func)
+            return (func() == 0);
+        else {
+            vlogE("Can not find func symbol camera_open");
+            return false;
+        }
     } else {
         return true;
     }
@@ -254,7 +270,12 @@ void CCamera::flip(bool on)
         int (*func)() = NULL;
 
         func = (int (*)())dlsym(mAgent->dylib(), "camera_flip");
-        (void)func();
+        if (func)
+            func();
+        else {
+            vlogE("Can not find func symbol camera_flip");
+            exit(-1);
+        }
     } else {
         vlogI("camera turned %s", on ? "on": "off");
     }
@@ -266,6 +287,7 @@ void CCamera::close(void)
         void (*func)() = NULL;
 
         func = (void (*)())dlsym(mAgent->dylib(), "camera_close");
-        func();
+        if (func)
+            func();
     }
 }
