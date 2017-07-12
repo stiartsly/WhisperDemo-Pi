@@ -28,4 +28,4 @@ set (WMDEMO_SOURCES
         json/jsoncpp.cpp)
 
 add_executable(wmdemo ${WMDEMO_SOURCES})
-target_link_libraries(wmdemo ${WMLIBS} mp4v2 pthread dl)
+target_link_libraries(wmdemo ${WMLIBS} pthread dl)
