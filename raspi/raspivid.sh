@@ -3,12 +3,10 @@ raspivid -v \
            -w 320 \
            -h 240 \
            -pf baseline \
-           -b 90000 \
+           -b 150000 \
            -fps 30 \
            -t 0 \
-           -n \
-           -sh 50 \
-           -co 50 \
-           -br 50 \
-           -sa 50 \
-           -vs
+           -ih \
+           -fl \
+           -g 10 \
+           -n

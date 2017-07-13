@@ -28,6 +28,52 @@ void camera_set_callbacks(void *streamCb, void *context)
     streamFwdArgv = context;
 }
 
+static pid_t raspivid_pid = -1;
+
+static int raspivid_open(void)
+{
+    pid_t pid;
+
+    pid = fork();
+    if (pid < 0) {
+        perror("fork: ");
+        return -1;
+    } else if (pid == 0) {
+        int rc;
+        char *argv[] = {"raspivid", \
+                        "-v", \
+                        "-o", "udp://127.0.0.1:12300", \
+                        "-w", "320", \
+                        "-h", "240", \
+                        "-pf", "baseline", \
+                        "-b", "150000", \
+                        "-fps", "30", \
+                        "-t", "0", \
+                        "-ih", \
+                        "-fl", \
+                        "-g", "10", \
+                        "-n", \
+                        NULL
+                       };
+        rc = execvp(argv[0], argv);
+        if (rc < 0) {
+            perror("execv:");
+            return -1;
+        }
+        exit(0);
+    } else {
+        raspivid_pid = pid;
+    }
+
+    return 0;
+}
+
+static void raspivid_close(void)
+{
+    if (raspivid_pid > 0)
+        kill(raspivid_pid, SIGKILL);
+}
+
 static
 void *camera_forwarding_routine(void *argv)
 {
@@ -77,9 +123,15 @@ int camera_open(void)
 {
     int sock;
 
+    if (raspivid_open() < 0) {
+        printf("open raspivid error");
+        return -1;
+    }
+
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     if (sock == -1) {
         printf("socket error: %d\n", errno);
+        raspivid_close();
         return -1;
     }
 
@@ -95,6 +147,7 @@ int camera_open(void)
     if (rc == 0) {
         printf("inet_aton error\n");
         close(sock);
+        raspivid_close();
         return -1;
     }
 
@@ -102,6 +155,7 @@ int camera_open(void)
     if (rc == -1) {
         printf("bind error: %d\n", errno);
         close(sock);
+        raspivid_close();
         return -1;
     }
 
@@ -116,6 +170,7 @@ int camera_open(void)
     if (rc < 0) {
         printf("create camera forwarding thread error :%d\n", rc);
         close(sock);
+        raspivid_close();
         return -1;
     }
 
@@ -125,6 +180,7 @@ int camera_open(void)
 void camera_close(void)
 {
     running = false;
+    raspivid_close();
 }
 
 int camera_flip(void)
