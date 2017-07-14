@@ -159,10 +159,10 @@ void CBulb::close(void)
 
 bool CTorch::open(void)
 {
-    if (mAgent->dylib()) {
+    if (mCfg && mCfg->dylib()) {
         int (*func)() = NULL;
 
-        func = (int (*)())dlsym(mAgent->dylib(), "matrix_open");
+        func = (int (*)())dlsym(mCfg->dylib(), "matrix_open");
         if (func)
             return (func() == 0);
         else {
@@ -176,10 +176,10 @@ bool CTorch::open(void)
 
 void CTorch::flip(bool on)
 {
-    if (mAgent->dylib()) {
+    if (mCfg && mCfg->dylib()) {
         int (*func)() = NULL;
 
-        func = (int (*)())dlsym(mAgent->dylib(), "matrix_flip");
+        func = (int (*)())dlsym(mCfg->dylib(), "matrix_flip");
         if (func)
            func();
         else {
@@ -193,10 +193,10 @@ void CTorch::flip(bool on)
 
 void CTorch::close(void)
 {
-    if (mAgent->dylib()) {
+    if (mCfg && mCfg->dylib()) {
         void (*func)() = NULL;
 
-        func = (void (*)())dlsym(mAgent->dylib(), "matrix_close");
+        func = (void (*)())dlsym(mCfg->dylib(), "matrix_close");
         if (func)
             func();
     }
@@ -260,8 +260,6 @@ void streamFwd(void *data, int len, void *argv)
 
     uint32_t ts = (uint32_t)(now.tv_sec * 1000 + now.tv_usec/1000);
 
-    //vlogI("fwd stream data :%d", len);
-
     rtp->streamFwd((const uint8_t*)data, len, ts);
 }
 
@@ -273,24 +271,46 @@ bool CCamera::open(void)
         return false;
     }
 
-    if (mAgent->dylib() != NULL) {
-        typedef void (*StreamFwdPtr)(void *, void *);
+    if (mCfg && mCfg->dylib()) {
+        typedef void (*CameraCbsPtr)(void *, void *);
+        CameraCbsPtr f1;
 
-        StreamFwdPtr ptr1 = NULL;
-
-        ptr1 = (StreamFwdPtr)dlsym(mAgent->dylib(), "camera_set_callbacks");
-        if (ptr1)
-            ptr1((void *)streamFwd, mRtp.get());
+        f1 = (CameraCbsPtr)dlsym(mCfg->dylib(), "camera_set_callbacks");
+        if (f1)
+            f1((void *)streamFwd, mRtp.get());
         else {
-            vlogE("Can not find symbol stream_set_callbacks");
+            vlogE("Can not find symbol camera_set_callbacks");
             return false;
         }
 
-        typedef int  (*CameraOpenPtr)(void);
-        CameraOpenPtr ptr2 = NULL;
-        ptr2 = (CameraOpenPtr)dlsym(mAgent->dylib(), "camera_open");
-        if (ptr2)
-            return (ptr2() == 0);
+        typedef void (*CameraPortPtr)(int);
+        CameraPortPtr f2;
+
+        f2 = (CameraPortPtr)dlsym(mCfg->dylib(), "camera_set_port");
+        if (f2)
+            f2(mCfg->cameraPort());
+        else {
+            vlogE("Can not find symbol camera_set_port");
+            return false;
+        }
+
+        typedef void (*CameraParamsPtr)(int, int, int, int, int);
+        CameraParamsPtr f3;
+
+        f3 = (CameraParamsPtr)dlsym(mCfg->dylib(), "camera_set_parameters");
+        if (f3) {
+            f3(mCfg->widthRes(), mCfg->heightRes(), mCfg->bitRate(),
+                 mCfg->frameRate(), mCfg->profile());
+        } else {
+            vlogE("Can not find symbol camera_set_paramters");
+            return false;
+        }
+
+        typedef int (*CameraOpenPtr)(void);
+        CameraOpenPtr f4 = NULL;
+        f4 = (CameraOpenPtr)dlsym(mCfg->dylib(), "camera_open");
+        if (f4)
+            return (f4() == 0);
         else {
             vlogE("Can not find func symbol camera_open");
             return false;
@@ -302,10 +322,10 @@ bool CCamera::open(void)
 
 void CCamera::flip(bool on)
 {
-    if (mAgent->dylib()) {
+    if (mCfg && mCfg->dylib()) {
         int (*func)() = NULL;
 
-        func = (int (*)())dlsym(mAgent->dylib(), "camera_flip");
+        func = (int (*)())dlsym(mCfg->dylib(), "camera_flip");
         if (func)
             func();
         else {
@@ -319,10 +339,10 @@ void CCamera::flip(bool on)
 
 void CCamera::close(void)
 {
-    if (mAgent->dylib()) {
+    if (mCfg && mCfg->dylib()) {
         void (*func)() = NULL;
 
-        func = (void (*)())dlsym(mAgent->dylib(), "camera_close");
+        func = (void (*)())dlsym(mCfg->dylib(), "camera_close");
         if (func)
             func();
     }

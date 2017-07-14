@@ -6,6 +6,8 @@
 #include <string>
 #include <map>
 
+#include "cfg.h"
+
 class CRtp;
 class CAgent;
 
@@ -104,12 +106,16 @@ protected:
 
 class CTorch: public CGadget {
 public:
-    CTorch(CAgent *agent, bool val): CGadget("torch", agent, val) {}
+    CTorch(std::shared_ptr<CConfig> cfg, CAgent *agent, bool val):
+        mCfg(cfg), CGadget("torch", agent, val) {}
 
 protected:
     bool open(void) override;
     void flip(bool on) override;
     void close(void) override;
+
+private:
+    std::shared_ptr<CConfig> mCfg;
 };
 
 class CBrightness: public CGadget {
@@ -144,7 +150,8 @@ protected:
 
 class CCamera: public CGadget {
 public:
-    CCamera(CAgent *agent, bool val): CGadget("camera", agent, val) {}
+    CCamera(std::shared_ptr<CConfig> cfg, CAgent *agent, bool val):
+        mCfg(cfg), CGadget("camera", agent, val) {}
 
 protected:
     bool open(void) override;
@@ -152,6 +159,7 @@ protected:
     void close(void) override;
 
 private:
+    std::shared_ptr<CConfig> mCfg;
     std::shared_ptr<CRtp> mRtp;
 };
 

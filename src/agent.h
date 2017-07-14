@@ -41,7 +41,6 @@ private:
 class CAgent {
 public:
     explicit CAgent(std::shared_ptr<CInput> input):
-        mDylib(NULL),
         mWhisper(NULL),
         mIsConnected(false),
         mUser(NULL),
@@ -49,16 +48,12 @@ public:
         mPeers(),
         mGadgets() {}
 
-    ~CAgent();
-
 public:
     bool setup(std::shared_ptr<CConfig> cfg);
     void run(void);
     void stop(void);
 
     void handleInput(void);
-
-    void *dylib(void) { return mDylib; }
 
     void didConnectionStatusChange(WhisperConnectionStatus status);
     void didReady(void);
@@ -98,8 +93,6 @@ private:
     void refreshPeerGadgets(const std::string &peerName) const;
     void refreshPeerGadgets(void) const;
 private:
-    void *mDylib;
-
     Whisper *mWhisper;
 
     bool mIsConnected;

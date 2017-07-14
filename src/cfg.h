@@ -4,19 +4,17 @@
 #include <memory>
 #include <string>
 
+#include "confuse.h"
+
 class CConfig {
 public:
-    bool load(const std::string &cfgFile);
+    ~CConfig();
 
 public:
-    int logLevel(void) const {
-        return mLogLevel;
-    }
+    bool load(const char *cfgFile);
+    void dump(void) const;
 
-    const char *logPath(void) const {
-        return mLogFile->c_str();
-    }
-
+public:
     const char *appId(void) const {
         return mAppId->c_str();
     }
@@ -34,7 +32,19 @@ public:
     }
 
     const char *trustStore(void) const {
-        return mTrustStore->c_str();
+        return mTrustStore ? mTrustStore->c_str() : NULL;
+    }
+
+    const char *dataDir(void) const {
+        return mDataDir->c_str();
+    }
+
+    int getLogLevel(void) const {
+        return mLogLevel;
+    }
+
+    const char *logPath(void) const {
+        return mLogFile->c_str();
     }
 
     const char *turnHost(void) const {
@@ -49,46 +59,74 @@ public:
         return mPassword->c_str();
     }
 
-    const char *persistentLocation(void) const {
-        return mPersistentLocation->c_str();
+    int cameraPort(void) const {
+        return mCameraPort;
     }
 
-    const char *deviceId(void) const {
-        return mDeviceId->c_str();
+    int widthRes(void) const {
+        return mWidthRes;
+    }
+
+    int heightRes(void) const {
+        return mHeightRes;
+    }
+
+    int bitRate(void) const {
+        return mBitRate;
+    }
+
+    int frameRate(void) const {
+        return mFrameRate;
+    }
+
+    int profile(void) const {
+        if (mProfile->compare("high") == 0)
+            return 2;
+        else if (mProfile->compare("main") == 0)
+            return 1;
+        else if (mProfile->compare("baseline") == 0)
+            return 0;
+        else
+            return 0;
     }
 
     bool isDummy(void) const {
         return mDummy;
     }
 
-    const char *dylibName(void) const {
-        return mDylibName ? mDylibName->c_str() : nullptr;
+    void *dylib() const {
+        return mDylib;
     }
 
-private:
-    std::shared_ptr<std::string> getString(void*, const char* name);
-    int getInt(void*, const char* name);
-    
 private:
     std::shared_ptr<std::string> mAppId;
     std::shared_ptr<std::string> mAppKey;
     std::shared_ptr<std::string> mApiServer;
     std::shared_ptr<std::string> mMqttServer;
     std::shared_ptr<std::string> mTrustStore;
+    std::shared_ptr<std::string> mDataDir;
+
+    int mLogLevel;
+    std::shared_ptr<std::string> mLogFile;
+
+    // turn server related parameters.
     std::shared_ptr<std::string> mTurnServer;
     std::shared_ptr<std::string> mUsername;
     std::shared_ptr<std::string> mPassword;
 
-    std::shared_ptr<std::string> mPersistentLocation;
-    std::shared_ptr<std::string> mDeviceId;
+    // camera related parameters.
+    int mCameraPort;
+    int mWidthRes;
+    int mHeightRes;
+    int mBitRate;
+    int mFrameRate;
+    std::shared_ptr<std::string> mProfile;
 
-    int mLogLevel;
-
-    std::shared_ptr<std::string> mLogFile;
-    std::shared_ptr<std::string> mCfgFile;
-
+    // run host related parameters.
     bool mDummy;
-    std::shared_ptr<std::string> mDylibName;
+    void *mDylib;
+
+    cfg_t *mCfg;
 };
 
 #endif /* __CONFIG_H__ */

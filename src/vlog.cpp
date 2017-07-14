@@ -18,29 +18,6 @@ static const char* level_names[] = {
     "DEBUG"
 };
 
-#if 0
-static void set_color(int level)
-{
-    const char *color = "";
-
-    if (level == VLOG_ERR)
-        color = "\e[0;31m";
-    else if (level == VLOG_WARN)
-        color = "\e[0;33m";
-    else if (level == VLOG_INFO)
-        color = "\e[0;32m";
-    else if (level == VLOG_DEBUG)
-        color = "\e[1;30m";
-
-    fprintf(stderr, "%s", color);
-}
-
-static void reset_color()
-{
-    fprintf(stderr, "\e[0m");
-}
-#endif
-
 void eclogv(int level, const char *format, va_list args)
 {
     if (level > logLevel)
@@ -52,19 +29,19 @@ void eclogv(int level, const char *format, va_list args)
     {
         int rc;
         char timestr[20];
-        char buf[512];
-        char out[512];
+        char buf[1024];
+        char out[1024];
         time_t cur = time(NULL);
 
         strftime(timestr, 20, TIME_FORMAT, localtime(&cur));
         rc = vsnprintf(buf, sizeof(buf), format, args);
         if (rc == -1)
-            buf[511] = 0;
+            buf[1023] = 0;
 
         rc = snprintf(out, sizeof(out), "%s - %-7s : %s\n",
                        timestr, level_names[level], buf);
         if (rc == -1)
-            out[511] = 0;
+            out[1023] = 0;
 
         pthread_mutex_lock(&lock);
         //set_color(level);
@@ -83,7 +60,7 @@ void logMsg(int level, const char *format, ...)
     va_end(args);
 }
 
-void logMsg(int level, const char *format, va_list args)
+void logMsgV(int level, const char *format, va_list args)
 {
     char out[512];
     int rc;

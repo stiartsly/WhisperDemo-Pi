@@ -3,10 +3,8 @@
 
 #include <stdarg.h>
 
-#if 0
 #ifdef __cplusplus
 extern "C" {
-#endif
 #endif
 
 #define VLOG_ERR        0
@@ -43,12 +41,10 @@ extern int logLevel;
     
 
 void logMsg(int level, const char *format, ...);
-void logMsg(int level, const char *format, va_list args);
+void logMsgV(int level, const char *format, va_list args);
 void setLogLevel(int level);
 
-#if 0
 #ifdef __cplusplus
 }
-#endif
 #endif
 #endif

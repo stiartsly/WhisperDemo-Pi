@@ -2,8 +2,6 @@
 #include <cassert>
 #include <memory>
 
-#include <dlfcn.h>
-
 #include "whisper.h"
 #include "whisper_session.h"
 #include "vlog.h"
@@ -76,7 +74,7 @@ void CPeer::addGadget(CAgent* agent, const std::string &name, const GadgetValue 
     if (name.compare("bulb") == 0)
         gadget = new CBulb(agent, value.bValue());
     else if (name.compare("torch") == 0)
-        gadget = new CTorch(agent, value.bValue());
+        gadget = new CTorch(nullptr, agent, value.bValue());
     else if (name.compare("brightness") == 0)
         gadget = new CBrightness(agent, value.fValue());
     else if (name.compare("ring") == 0)
@@ -84,7 +82,7 @@ void CPeer::addGadget(CAgent* agent, const std::string &name, const GadgetValue 
     else if (name.compare("volume") == 0)
         gadget = new CVolume(agent, value.fValue());
     else if (name.compare("camera") == 0)
-        gadget = new CCamera(agent, value.bValue());
+        gadget = new CCamera(nullptr, agent, value.bValue());
     else {
         vlogE("Unknown gadget name, skipped");
         return;
@@ -322,37 +320,11 @@ void onSessionRequestCallback(Whisper *whisper, const char *from,
 static
 void logPrint(const char *format, va_list args)
 {
-    logMsg(VLOG_INFO, format, args);
-}
-
-CAgent::~CAgent()
-{
-    if (mDylib)
-        dlclose(mDylib);
+    logMsgV(VLOG_INFO, format, args);
 }
 
 bool CAgent::setup(const std::shared_ptr<CConfig> cfg)
 {
-    if (cfg->dylibName()) {
-        mDylib = dlopen(cfg->dylibName(), RTLD_NOW);
-        if (!mDylib) {
-            vlogE("Loading dynamic library %s error: %s", cfg->dylibName(),
-                dlerror());
-            return false;
-        }
-    }
-
-    std::map<std::string, std::shared_ptr<CGadget>>::const_iterator it;
-    for (it = mGadgets.begin(); it != mGadgets.end(); ++it) {
-        bool succ;
-
-        succ = it->second->open();
-        if (!succ) {
-            vlogE("Open gadget %s error.", it->first.c_str());
-            return false;
-        }
-    }
-
     WhisperOptions options = {
         .login = NULL,
         .password = NULL,
@@ -365,8 +337,8 @@ bool CAgent::setup(const std::shared_ptr<CConfig> cfg)
         .connect_timeout = 0,
         .retry_interval = 0,
         .retry_times = 0,
-        .persistent_location = cfg->persistentLocation(),
-        .deviceid = cfg->deviceId(),
+        .persistent_location = cfg->dataDir(),
+        .deviceid = "adkafaf",
     };
 
     WhisperCallbacks callbacks = {
@@ -387,7 +359,7 @@ bool CAgent::setup(const std::shared_ptr<CConfig> cfg)
 
     mIsDummy = cfg->isDummy();
 
-    whisper_log_init((WhisperLogLevel)cfg->logLevel(), cfg->logPath(), logPrint);
+    whisper_log_init((WhisperLogLevel)cfg->getLogLevel(), cfg->logPath(), logPrint);
 
     mWhisper = whisper_new(&options, &callbacks, this);
     if (!mWhisper) {

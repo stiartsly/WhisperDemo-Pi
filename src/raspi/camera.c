@@ -12,10 +12,16 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-char buff[8*1024];
+char data[8*1024];
 
 static const char *host = "127.0.0.1";
-static int port = 12300;
+static int stream_port = 12300;
+static int width = 320;
+static int height = 240;
+static int bitrate = 150000;
+static int framerate = 30;
+static int profile = 0;
+
 static bool running = false;
 static pthread_t camera_thread;
 
@@ -26,6 +32,20 @@ void camera_set_callbacks(void *streamCb, void *context)
 {
     streamFwdCb = (void (*)(void *, int, void *))streamCb;
     streamFwdArgv = context;
+}
+
+void camera_set_port(int port)
+{
+    stream_port = port;
+}
+
+void camera_set_parameters(int w, int h, int br, int fps, int pf)
+{
+    width = w;
+    height = h;
+    bitrate = br;
+    framerate = fps;
+    profile = pf;
 }
 
 static pid_t raspivid_pid = -1;
@@ -39,28 +59,113 @@ static int raspivid_open(void)
         perror("fork: ");
         return -1;
     } else if (pid == 0) {
-        int rc;
-        char *argv[] = {"raspivid", \
-                        "-v", \
-                        "-o", "udp://127.0.0.1:12300", \
-                        "-w", "320", \
-                        "-h", "240", \
-                        "-pf", "baseline", \
-                        "-b", "150000", \
-                        "-fps", "30", \
-                        "-t", "0", \
-                        "-ih", \
-                        "-fl", \
-                        "-g", "10", \
-                        "-n", \
-                        NULL
-                       };
+        int rc  = 0;
+        int off = 0;
+        int i = 0;
+        char buf[1024] = {0};
+        char *argv[32] = { NULL };
+
+        rc = sprintf(buf + off, "raspivid");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "-v");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "-o");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "udp://127.0.0.1:%d", stream_port);
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "-w");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "%d", width);
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "-h");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "%d", height);
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "-pf");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        if (profile == 2)
+            rc = sprintf(buf + off, "high");
+        else if (profile == 1)
+            rc = sprintf(buf + off, "main");
+        else
+            rc = sprintf(buf + off, "baseline");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "-b");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "%d", bitrate);
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "-fps");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "%d", framerate);
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "-t");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "0");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "-ih");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "-fl");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "-g");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "10");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+        rc = sprintf(buf + off, "-n");
+        argv[i++] = buf + off;
+        off += rc + 1;
+
+#if 0
+        for (i = 0; argv[i] != NULL; i++)
+            printf("argv[%d]: %s\n",i, argv[i]);
+#endif
+
         rc = execvp(argv[0], argv);
         if (rc < 0) {
             perror("execv:");
             return -1;
         }
         exit(0);
+
     } else {
         raspivid_pid = pid;
     }
@@ -99,19 +204,18 @@ void *camera_forwarding_routine(void *argv)
             struct sockaddr_in raddr;
             socklen_t addrlen = sizeof(raddr);
 
-            memset(&buff, 0, sizeof(buff));
+            //memset(&data, 0, sizeof(data));
             memset(&raddr,0, sizeof(raddr));
 
-            rc = recvfrom(sock, buff, sizeof(buff), 0, (struct sockaddr *)&raddr, &addrlen);
+            rc = recvfrom(sock, data, sizeof(data), 0, (struct sockaddr *)&raddr, &addrlen);
             if (rc < 0) {
                 printf("recvfrom error: %d\n", errno);
                 close(sock);
                 return NULL;
             }
 
-            //printf("received data length: %d from %s\n", rc, inet_ntoa(raddr.sin_addr));
             if (streamFwdCb)
-                streamFwdCb(buff, rc, streamFwdArgv);
+                streamFwdCb(data, rc, streamFwdArgv);
         }
     }
 
@@ -140,7 +244,7 @@ int camera_open(void)
     struct sockaddr_in saddr;
     memset(&saddr, 0, sizeof(saddr));
     saddr.sin_family = AF_INET;
-    saddr.sin_port = htons(port);
+    saddr.sin_port = htons(stream_port);
 
     int rc;
     rc = inet_aton(host, &saddr.sin_addr);
@@ -159,7 +263,7 @@ int camera_open(void)
         return -1;
     }
 
-    printf("binded to stream port:%s:%d successfully\n", host, port);
+    printf("binded to stream port:%s:%d successfully\n", host, stream_port);
 
     pthread_attr_t attr;
 
