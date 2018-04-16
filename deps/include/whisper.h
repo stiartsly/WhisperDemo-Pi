@@ -36,7 +36,16 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed App/Node/User ID max length.
+ * Whisper User address max length.
+ *
+ * \~Chinese
+ * 用户地址标识的最大长度。
+ */
+#define WHISPER_MAX_ADDRESS_LEN             52
+
+/**
+ * \~English
+ * Whisper App/Node/User ID max length.
  *
  * \~Chinese
  * 应用/节点/用户ID的最大长度。
@@ -45,7 +54,7 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed App/Node/User key max length.
+ * Whisper App/Node/User key max length.
  *
  * \~Chinese
  * 应用/节点/用户密钥的最大长度。
@@ -54,7 +63,7 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed user login name max length.
+ * Whisper user login name max length.
  *
  * \~Chinese
  * 用户登录名的最大长度。
@@ -63,7 +72,7 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed user password max length.
+ * Whisper user password max length.
  *
  * \~Chinese
  * 用户密码的最大长度。
@@ -72,7 +81,7 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed server URI max length.
+ * Whisper server URI max length.
  *
  * \~Chinese
  * 服务器地址的最大长度。
@@ -81,7 +90,7 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed user name max length.
+ * Whisper user name max length.
  *
  * \~Chinese
  * 用户名的最大长度。
@@ -90,7 +99,7 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed user description max length.
+ * Whisper user description max length.
  *
  * \~Chinese
  * 用户描述的最大长度。
@@ -99,7 +108,7 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed user phone number max length.
+ * Whisper user phone number max length.
  *
  * \~Chinese
  * 用户电话的最大长度。
@@ -108,7 +117,7 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed user email address max length.
+ * Whisper user email address max length.
  *
  * \~Chinese
  * 用户电子邮箱的最大长度。
@@ -117,7 +126,7 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed user region max length.
+ * Whisper user region max length.
  *
  * \~Chinese
  * 用户地区的最大长度。
@@ -126,7 +135,7 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed user gender max length.
+ * Whisper user gender max length.
  *
  * \~Chinese
  * 用户性别的最大长度。
@@ -135,7 +144,7 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed node name max length.
+ * Whisper node name max length.
  *
  * \~Chinese
  * 节点名的最大长度。
@@ -144,7 +153,7 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed node description max length.
+ * Whisper node description max length.
  *
  * \~Chinese
  * 节点描述的最大长度。
@@ -153,21 +162,48 @@ extern "C" {
 
 /**
  * \~English
- * Whisper managed user presence max length.
- *
- * \~Chinese
- * 用户上下线情况的最大长度。
- */
-#define WHISPER_MAX_USER_PRESENCE_LEN       31
-
-/**
- * \~English
- * Whisper managed App message max length.
+ * Whisper App message max length.
  *
  * \~Chinese
  * 应用消息的最大长度。
  */
 #define WHISPER_MAX_APP_MESSAGE_LEN         2048
+
+/**
+ * \~English
+ * The max length of TURN server host name.
+ *
+ * \~Chinese
+ * TURN服务器主机名（或IP地址）的最大长度
+ */
+#define WHISPER_MAX_TURN_SERVER_LEN         63
+
+/**
+ * \~English
+ * The max length of user name to TURN server.
+ *
+ * \~Chinese
+ * TURN服务器用户名的最大长度。
+ */
+#define WHISPER_MAX_TURN_USERNAME_LEN       63
+
+/**
+ * \~English
+ * The max length of user password to TURN server.
+ *
+ * \~Chinese
+ * TURN服务器密码的最大长度
+ */
+#define WHISPER_MAX_TURN_PASSWORD_LEN       63
+
+/**
+ * \~English
+ * The max length of TURN server realm in ICE protocol.
+ *
+ * \~Chinese
+ * TURN服务器ICE协议中Realm值的最大长度
+ */
+#define WHISPER_MAX_TURN_REALM_LEN          127
 
 typedef struct Whisper Whisper;
 
@@ -178,7 +214,7 @@ typedef struct Whisper Whisper;
 /**
  * \~English
  * WhisperOptions defines several settings that control the way the
- * client connects to an Whisper managed server.
+ * Whisper node connects to an Whisper network.
  *
  * @remark
  *      Default values are not defined for server_uri of WhisperOptions,
@@ -190,20 +226,20 @@ typedef struct Whisper Whisper;
  *      compilers) sets all values to 0 (NULL for pointers).
  *
  * \~Chinese
- * WhisperOptions定义了一些控制客户端连接到服务器的设置。
+ * WhisperOptions定义了一些控制Whisper节点连接到Whisper网络的设置。
  *
  * @remark
  *      WhisperOptions中的server_uri没有默认值，因此应用程序应当显示设置。
  *      如果WhisperOptions类型的变量被定义成自动变量，所有成员都是使用
- *      随机值，因此必须由客户端应用程序设置。如果WhisperOptions类型的变量
+ *      随机值，因此必须由Whisper节点应用程序设置。如果WhisperOptions类型的变量
  *      被定义成静态变量，初始（在兼容编译器中）设置所有成员为0（指针类型
  *      的成员为空）。
  */
 typedef struct WhisperOptions {
     /**
      * \~English
-     * The user login identifier passed to the server when the client connects
-     * to it.
+     * The user login identifier passed to Whisper network when the client
+     * connects to it.
      *
      * \~Chinese
      * 用户登录ID。
@@ -211,7 +247,7 @@ typedef struct WhisperOptions {
     const char *login;
     /**
      * \~English
-     * The user password to the server when the client connects to it.
+     * The user password to Whisper network when the client connects to it.
      *
      * IMPORTANT:
      *     The application should clear the password in memory ASAP for
@@ -223,7 +259,7 @@ typedef struct WhisperOptions {
     const char *password;
     /**
      * \~English
-     * The app identifier passed to the server when the client connects
+     * The app identifier to Whisper network when the client connects
      * to it.
      *
      * \~Chinese
@@ -232,7 +268,7 @@ typedef struct WhisperOptions {
     const char *appid;
     /**
      * \~English
-     * The app key passed to the server when the client connects to it.
+     * The app key to Whisper network when the client connects to it.
      *
      * \~Chinese
      * 应用程序密钥。
@@ -347,10 +383,10 @@ typedef struct WhisperOptions {
 
 /**
  * \~English
- * Get the current version of Whisper client.
+ * Get the current version of Whisper node.
  *
  * \~Chinese
- * 获取当前Whisper客户端的版本。
+ * 获取当前Whisper节点的版本。
  */
 WHISPER_API
 const char *whisper_get_version(void);
@@ -375,86 +411,142 @@ typedef enum WhisperLogLevel {
     WhisperLogLevel_None = 0,
     /**
      * \~English
-     * Log level error.
-     * Indicate output log with level 'Error' only.
+     * Log level fatal.
+     * Indicate output log with level 'Fatal' only.
      *
      * \~Chinese
      * 错误日志级别。
-     * 表示只输出错误级别的日志。
+     * 表示只输出不可恢复错误级别的日志。
      */
-    WhisperLogLevel_Error = 1,
+    WhisperLogLevel_Fatal = 1,
+    /**
+     * \~English
+     * Log level error.
+     * Indicate output log above 'Error' level.
+     *
+     * \~Chinese
+     * 错误日志级别。
+     * 表示只输出错误及以上级别的日志。
+     */
+    WhisperLogLevel_Error = 2,
     /**
      * \~English
      * Log level warning.
-     * Indicate output log with level 'Error' and 'Warning'.
+     * Indicate output log above 'Warning' level.
      *
      * \~Chinese
      * 警告日志级别
-     * 表示输出错误和警告级别的日志。
+     * 表示输出警告及以上级别的日志。
      */
-    WhisperLogLevel_Warning = 2,
+    WhisperLogLevel_Warning = 3,
     /**
      * \~English
      * Log level info.
-     * Indicate output log with level 'Error', 'Warning' and 'Info'.
+     * Indicate output log above 'Info' level.
      *
      * \~Chinese
      * 信息日志级别
-     * 表示输出错误、警告和信息级别的日志。
+     * 表示输出信息及以上级别的日志。
      */
-    WhisperLogLevel_Info = 3,
+    WhisperLogLevel_Info = 4,
     /*
      * \~English
      * Log level debug.
-     * Indicate output log with no filters.
+     * Indicate output log above 'Debug' level.
      *
      * \~Chinese
      * 调试日志级别
-     * 表示输出所有级别的日志。
+     * 表示输出调试及以上级别的日志。
      */
-    WhisperLogLevel_Debug = 4
-
+    WhisperLogLevel_Debug = 5,
+    /*
+     * \~English
+     * Log level trace.
+     * Indicate output log above 'Trace' level.
+     *
+     * \~Chinese
+     * 跟踪日志级别
+     * 表示输出所跟踪及以上级别的日志。
+     */
+    WhisperLogLevel_Trace = 6,
+    /*
+     * \~English
+     * Log level verbose.
+     * Indicate output log above 'Verbose' level.
+     *
+     * \~Chinese
+     * 冗长日志级别
+     * 表示输出冗长及以上级别的日志。
+     */
+    WhisperLogLevel_Verbose = 7
 } WhisperLogLevel;
 
 /**
  * \~English
- * Whisper client connection status to the server.
+ * Whisper node connection status to Whisper network.
  *
  * \~Chinese
- * Whisper客户端到服务器的连接状态。
+ * Whisper节点的网络连接状态。
  */
 typedef enum WhisperConnectionStatus {
     /**
      * \~English
-     * Attempting to connect to server.
-     * Not connected yet, so it's offline.
+     * Whisper node connected to Whisper network.
+     * Indicate the Whisper node is online.
      *
      * \~Chinese
-     * 尝试连接到服务器。
-     * 还没连接上，所以是离线的。
-     */
-    WhisperConnectionStatus_Connecting,
-    /**
-     * \~English
-     * Whisper client connected to the server.
-     * Indicate the client is online.
-     *
-     * \~Chinese
-     * 已连接上服务器。
-     * 表明客户端是上线状态。
+     * 已连接上Whisper网络。
+     * 表明Whisper节点是上线状态。
      */
     WhisperConnectionStatus_Connected,
     /**
      * \~English
-     * There is no connection to the server.
-     * Indicate the client is offline.
+     * There is no connection to Whisper network.
+     * Indicate the Whisper node is offline.
      *
      * \~Chinese
-     * 没有连接上服务器。
-     * 表明客户端是离线状态。
+     * 没有连接上Whisper网络。
+     * 表明Whisper节点是离线状态。
      */
     WhisperConnectionStatus_Disconnected,
 } WhisperConnectionStatus;
+
+/**
+ * \~English
+ * Whisper node presence status to Whisper network.
+ *
+ * \~Chinese
+ * Whisper节点的在线状态。
+ */
+typedef enum WhisperPresenceStatus {
+    /**
+     * \~English
+     * Whisper node is online and available.
+     *
+     * \~Chinese
+     * Whisper节点在线并且可达状态。
+     */
+    WhisperPresenceStatus_None,
+    /**
+     * \~English
+     * Whisper node is being away.
+     * Whisper node can set this value with an user defined inactivity time.
+     *
+     * \~Chinese
+     * Whisper节点离开状态。
+     */
+    WhisperPresenceStatus_Away,
+    /**
+     * \~English
+     * Whisper node is being busy.
+     * Whisper node can set this value to tell friends that it can not
+     * currently wish to commincate.
+     *
+     * \~Chinese
+     * Whisper节点忙状态。此状态表示该节点当前不希望与好友通信交互。
+     */
+    WhisperPresenceStatus_Busy,
+} WhisperPresenceStatus;
 
 /**
  * \~English
@@ -466,10 +558,10 @@ typedef enum WhisperConnectionStatus {
 typedef struct WhisperNodeInfo {
     /**
      * \~English
-     * The node id. Read only to the client application.
+     * The node id. Read only to application.
      *
      * \~Chinese
-     * 节点ID。对于客户端应用程序来说是只读的。
+     * 节点ID。对于应用程序来说是只读的。
      */
     char nodeid[WHISPER_MAX_ID_LEN+1];
     /**
@@ -494,23 +586,21 @@ typedef struct WhisperNodeInfo {
  * \~English
  * A structure representing the Whisper user information.
  *
- * \~Chinese
- * 描述Whisper用户信息的结构体。
- *
- * \~English
- * In whisper managed SDK, self and all friends are Whisper user, and have
+ * In Whisper SDK, self and all friends are Whisper user, and have
  * same user attributes.
  *
  * \~Chinese
- * 在Whisper SDK中，自己和所有的朋友都是Whisper用户，都有相同的属性。
+ * 描述Whisper用户信息的结构体。
+ *
+ * 在Whisper SDK中，自己和所有的好友都是Whisper用户，都有相同的属性。
  */
 typedef struct WhisperUserInfo {
     /**
      * \~English
-     * User ID. Read only to the client application.
+     * User ID. Read only to application.
      *
      * \~Chinese
-     * 用户ID。对于客户端应用程序来说是只读的。
+     * 用户ID。对于应用程序来说是只读的。
      */
     char userid[WHISPER_MAX_ID_LEN+1];
     /**
@@ -578,9 +668,9 @@ typedef struct WhisperUserInfo {
  * Include the basic user information and the extra friend information.
  *
  * \~Chinese
- * 描述Whisper朋友信息的结构体。
+ * 描述Whisper好友信息的结构体。
  *
- * 包含基本用户信息和额外朋友信息。
+ * 包含基本用户信息和额外好友信息。
  */
 typedef struct WhisperFriendInfo {
     /**
@@ -588,7 +678,7 @@ typedef struct WhisperFriendInfo {
      * Friend's user information.
      *
      * \~Chinese
-     * 朋友的信息。
+     * 好友的信息。
      */
     WhisperUserInfo user_info;
     /**
@@ -596,7 +686,7 @@ typedef struct WhisperFriendInfo {
      * Entrustment relationship with this friend, @see WhisperEntrustmentType
      *
      * \~Chinese
-     * 和朋友的委托关系，参见WhisperEntrustmentType。
+     * 和好友的委托关系，参见WhisperEntrustmentType。
      */
     int entrusted;
     /**
@@ -604,22 +694,30 @@ typedef struct WhisperFriendInfo {
      * Your label for the friend.
      *
      * \~Chinese
-     * 朋友的标签。
+     * 好友的标签。
      */
     char label[WHISPER_MAX_USER_NAME_LEN+1];
+    /**
+     * \~English
+     * Friend's connection status.
+     *
+     * \~Chinese
+     * 好友的连接状态
+     */
+    WhisperConnectionStatus status;
     /**
      * \~English
      * Friend's presence status.
      *
      * \~Chinese
-     * 朋友的在线和离线状态。
+     * 好友的在线状态。
      */
-    char presence[WHISPER_MAX_USER_PRESENCE_LEN+1];
+    WhisperPresenceStatus presence;
 } WhisperFriendInfo;
 
 /**
  * \~English
- * Whisper callbacks, include all global callbacks for whisper.
+ * Whisper callbacks, include all global callbacks for Whisper.
  *
  * \~Chinese
  * Whisper相关的回调函数，包括Whisper的所有的全局函数。
@@ -630,7 +728,7 @@ typedef struct WhisperCallbacks {
      * An application-defined function that perform idle work.
      *
      * @param
-     *      whisper     [in] A handle to the Whisper client instance.
+     *      whisper     [in] A handle to the Whisper node instance.
      * @param
      *      context     [in] The application defined context data.
      *
@@ -638,7 +736,7 @@ typedef struct WhisperCallbacks {
      * 应用程序定义的执行空闲任务的函数。
      *
      * @param
-     *      whisper     [输入] Whisper客户端对象的句柄。
+     *      whisper     [输入] Whisper节点对象的句柄。
      * @param
      *      context     [输入] 应用程序定义的环境信息。
      */
@@ -649,9 +747,9 @@ typedef struct WhisperCallbacks {
      * An application-defined function that process the self connection status.
      *
      * @param
-     *      whisper     [in] A handle to the Whisper client instance.
+     *      whisper     [in] A handle to the Whisper node instance.
      * @param
-     *      status      [in] Current connection status. @see WhisperConnection.
+     *      status      [in] Current connection status. @see WhisperConnectionStatus.
      * @param
      *      context     [in] The application defined context data.
      *
@@ -659,9 +757,9 @@ typedef struct WhisperCallbacks {
      * 应用程序定义的处理自身连接状态的函数。
      *
      * @param
-     *      whisper     [输入] Whisper客户端对象的句柄。
+     *      whisper     [输入] Whisper节点对象的句柄。
      * @param
-     *      status      [输入] 当前连接状态。参见WhisperConnection。
+     *      status      [输入] 当前连接状态。参见WhisperConnectionStatus。
      * @param
      *      context     [输入] 应用程序定义的环境信息。
      */
@@ -675,16 +773,16 @@ typedef struct WhisperCallbacks {
      * whisper function to interact with friends.
      *
      * @param
-     *      whisper     [in] A handle to the Whisper client instance.
+     *      whisper     [in] A handle to the Whisper node instance.
      * @param
      *      context     [in] The application defined context data.
      *
      * \~Chinese
      * 应用程序定义的处理就绪通知的函数。
-     * 注意：应用程序应当在收到就绪通知后才能调用其他的Whisper函数来与朋友交互。
+     * 注意：应用程序应当在收到就绪通知后才能调用其他的Whisper函数来与好友交互。
      *
      * @param
-     *      whisper     [输入] Whisper客户端对象的句柄。
+     *      whisper     [输入] Whisper节点对象的句柄。
      * @param
      *      context     [输入] 应用程序定义的环境信息。
      */
@@ -695,7 +793,7 @@ typedef struct WhisperCallbacks {
      * An application-defined function that process the self info change event.
      *
      * @param
-     *      whisper     [in] A handle to the Whisper client instance.
+     *      whisper     [in] A handle to the Whisper node instance.
      * @param
      *      info        [in] The WhisperUserInfo pointer to the new user info.
      * @param
@@ -705,9 +803,9 @@ typedef struct WhisperCallbacks {
      * 应用程序定义的处理自身信息改变事件的函数。
      *
      * @param
-     *      whisper     [输入] Whisper客户端对象的句柄。
+     *      whisper     [输入] Whisper节点对象的句柄。
      * @param
-     *      info        [输入] 保存新用户信息的WhisperUserInfo类型变量的地址。
+     *      info        [输入] 保存用户的更新后信息的WhisperUserInfo类型变量的地址。
      * @param
      *      context     [输入] 应用程序定义的环境信息。
      */
@@ -717,10 +815,8 @@ typedef struct WhisperCallbacks {
      * \~English
      * An application-defined function that iterate the each friends list item.
      *
-     * WhisperFriendsIterateCallback is the callback function type.
-     *
      * @param
-     *      whisper     [in] A handle to the Whisper client instance.
+     *      whisper     [in] A handle to the Whisper node instance.
      * @param
      *      info        [in] A pointer to WhisperFriendInfo structure that
      *                       representing a friend
@@ -732,21 +828,49 @@ typedef struct WhisperCallbacks {
      *      false to stop iterate.
      *
      * \~Chinese
-     * 应用程序定义的迭代每个朋友列表项的函数。
-     *
-     * WhisperFriendInviteResponseCallback为回调函数的类型。
+     * 应用程序定义的迭代每个好友列表项的函数。
      *
      * @param
-     *      whisper     [输入] Whisper客户端对象的句柄。
+     *      whisper     [输入] Whisper节点对象的句柄。
      * @param
-     *      info        [输入] 描述朋友信息的WhisperFriendInfo类型的变量的地址。
+     *      info        [输入] 描述好友信息的WhisperFriendInfo类型的变量的地址。
      * @param
      *      context     [输入] 应用程序定义的环境数据。
      *
      * @return
-     *      如果继续迭代下一个朋友信息，返回true；如果停止迭代，返回false。
+     *      如果继续迭代下一个好友信息，返回true；如果停止迭代，返回false。
      */
-    bool (*friend_list)(Whisper *whisper, const WhisperFriendInfo* info, void* context);
+    bool (*friend_list)(Whisper *whisper, const WhisperFriendInfo* info,
+                        void* context);
+
+    /**
+     * \~English
+     * An application-defined function that process the friend connection
+     * change event.
+     *
+     * @param
+     *      whisper     [in] A handle to the Whisper node instance.
+     * @param
+     *      friendid    [in] The friend's user id.
+     * @param
+     *      status      [in] Connection status. @see WhisperConnectionStatus
+     * @param
+     *      context     [in] The application defined context data.
+     *
+     * \~Chinese
+     * 应用程序定义的处理好友连接状态改变的函数。
+     *
+     * @param
+     *      whisper     [输入] Whisper节点对象的句柄。
+     * @param
+     *      friendid    [输入] 好友ID。
+     @param
+     *      status      [输入] 当前网络连接状态。参见WhisperConnectionStatus。
+     * @param
+     *      context     [输入] 应用程序定义环境信息。
+     */
+    void (*friend_connection)(Whisper *whisper,const char *friendid,
+                              WhisperConnectionStatus status, void *context);
 
     /**
      * \~English
@@ -754,7 +878,7 @@ typedef struct WhisperCallbacks {
      * change event.
      *
      * @param
-     *      whisper     [in] A handle to the Whisper client instance.
+     *      whisper     [in] A handle to the Whisper node instance.
      * @param
      *      friendid    [in] The friend's user id.
      * @param
@@ -763,14 +887,14 @@ typedef struct WhisperCallbacks {
      *      context     [in] The application defined context data.
      *
      * \~Chinese
-     * 应用程序定义的处理朋友信息改变的函数。
+     * 应用程序定义的处理好友信息改变的函数。
      *
      * @param
-     *      whisper     [输入] Whisper客户端对象的句柄。
+     *      whisper     [输入] Whisper节点对象的句柄。
      * @param
-     *      friendid    [输入] 朋友ID。
+     *      friendid    [输入] 好友ID。
      * @param
-     *      info        [输入] 保存新朋友信息的WhisperFriendInfo类型变量的地址。
+     *      info        [输入] 保存好友更新信息的WhisperFriendInfo类型变量的地址。
      * @param
      *      context     [输入] 应用程序定义的环境信息。
      */
@@ -783,7 +907,7 @@ typedef struct WhisperCallbacks {
      * change event.
      *
      * @param
-     *      whisper     [in] A handle to the Whisper client instance.
+     *      whisper     [in] A handle to the Whisper node instance.
      * @param
      *      friendid    [in] The friend's user id.
      * @param
@@ -792,30 +916,30 @@ typedef struct WhisperCallbacks {
      *      context     [in] The application defined context data.
      *
      * \~Chinese
-     * 应用程序定义的处理朋友在线或者离线状态改变的函数。
+     * 应用程序定义的处理在线状态改变的函数。
      *
      * @param
-     *      whisper     [输入] Whisper客户端对象的句柄。
+     *      whisper     [输入] Whisper节点对象的句柄。
      * @param
-     *      friendid    [输入] 朋友ID。
+     *      friendid    [输入] 好友ID。
      * @param
-     *      presence    [输入] 朋友的在线或者离线状态。
+     *      presence    [输入] 好友的在线状态。
      * @param
      *      context     [输入] 应用程序定义环境信息。
      */
     void (*friend_presence)(Whisper *whisper, const char *friendid,
-                            const char *presence, void *context);
+                            WhisperPresenceStatus status, void *context);
 
     /**
      * \~English
      * An application-defined function that process the friend request.
      *
      * @param
-     *      whisper     [in] A handle to the Whisper client instance.
+     *      whisper     [in] A handle to the Whisper node instance.
      * @param
-     *      userid      [in] The user id who wants friend with self.
+     *      userid      [in] The user id who wants friend with us.
      * @param
-     *      info        [in] The user info who wants to friend with self.
+     *      info        [in] The basic user info who wants to be friend.
      * @param
      *      hello       [in] PIN for target user, or any application defined
      *                       content.
@@ -823,14 +947,14 @@ typedef struct WhisperCallbacks {
      *      context     [in] The application defined context data.
      *
      * \~Chinese
-     * 应用程序定义的处理朋友请求的函数。
+     * 应用程序定义的处理好友请求的函数。
      *
      * @param
-     *      whisper     [输入] Whisper客户端对象的句柄。
+     *      whisper     [输入] Whisper节点对象的句柄。
      * @param
-     *      userid      [输入] 想成为自己朋友的用户ID。
+     *      userid      [输入] 想成为自己好友的用户ID。
      * @param
-     *      info        [输入] 想成为自己朋友的用户的信息。
+     *      info        [输入] 想成为自己好友的用户基本信息。
      * @param
      *      hello       [输入] 机密信息，或者应用程序定义的内容。
      * @param
@@ -845,7 +969,7 @@ typedef struct WhisperCallbacks {
      * An application-defined function that process the friend response.
      *
      * @param
-     *      whisper     [in] A handle to the Whisper client instance.
+     *      whisper     [in] A handle to the Whisper node instance.
      * @param
      *      userid      [in] The target user id.
      * @param
@@ -862,10 +986,10 @@ typedef struct WhisperCallbacks {
      *      context     [in] The application defined context data.
      *
      * \~Chinese
-     * 应用程序定义的处理朋友响应的函数。
+     * 应用程序定义的处理好友响应的函数。
      *
      * @param
-     *      whisper     [输入] Whisper客户端对象的句柄。
+     *      whisper     [输入] Whisper节点对象的句柄。
      * @param
      *      userid      [输入] 响应的用户ID。
      * @param
@@ -890,19 +1014,19 @@ typedef struct WhisperCallbacks {
      * event.
      *
      * @param
-     *      whisper     [in] A handle to the Whisper client instance.
+     *      whisper     [in] A handle to the Whisper node instance.
      * @param
      *      info        [in] The firend's information.
      * @param
      *      context     [in] The application defined context data.
      *
      * \~Chinese
-     * 应用程序定义的处理添加朋友事件的函数。
+     * 应用程序定义的处理添加好友事件的函数。
      *
      * @param
-     *      whisper     [输入] Whisper客户端对象的句柄。
+     *      whisper     [输入] Whisper节点对象的句柄。
      * @param
-     *      info        [输入] 朋友信息。
+     *      info        [输入] 好友信息。
      * @param
      *      context     [输入] 应用程序定义的环境信息。
      */
@@ -915,19 +1039,19 @@ typedef struct WhisperCallbacks {
      * event.
      *
      * @param
-     *      whisper     [in] A handle to the Whisper client instance.
+     *      whisper     [in] A handle to the Whisper node instance.
      * @param
      *      friendid    [in] The friend's user id.
      * @param
      *      context     [in] The application defined context data.
      *
      * \~Chinese
-     * 应用程序定义的处理删除朋友事件的函数。
+     * 应用程序定义的处理删除好友事件的函数。
      *
      * @param
-     *      whisper     [输入] Whisper客户端对象的句柄。
+     *      whisper     [输入] Whisper节点对象的句柄。
      * @param
-     *      friendid    [输入] 朋友ID。
+     *      friendid    [输入] 好友ID。
      * @param
      *      context     [输入] 应用程序定义的环境信息。
      */
@@ -939,7 +1063,7 @@ typedef struct WhisperCallbacks {
      * An application-defined function that process the friend messages.
      *
      * @param
-     *      whisper     [in] A handle to the Whisper client instance.
+     *      whisper     [in] A handle to the Whisper node instance.
      * @param
      *      from        [in] The id(userid@nodeid) from who send the message.
      * @param
@@ -950,10 +1074,10 @@ typedef struct WhisperCallbacks {
      *      context     [in] The application defined context data.
      *
      * \~Chinese
-     * 应用程序定义的处理朋友请求的函数。
+     * 应用程序定义的处理好友请求的函数。
      *
      * @param
-     *      whisper     [输入] Whisper客户端对象的句柄。
+     *      whisper     [输入] Whisper节点对象的句柄。
      * @param
      *      from        [输入] 发送消息的用户ID(userid@nodeid)。
      * @param
@@ -971,7 +1095,7 @@ typedef struct WhisperCallbacks {
      * An application-defined function that process the friend invite request.
      *
      * @param
-     *      whisper     [in] A handle to the Whisper client instance.
+     *      whisper     [in] A handle to the Whisper node instance.
      * @param
      *      from        [in] The user id from who send the invite request.
      * @param
@@ -982,10 +1106,10 @@ typedef struct WhisperCallbacks {
      *      context     [in] The application defined context data.
      *
      * \~Chinese
-     * 应用程序定义的处理朋友邀请的函数。
+     * 应用程序定义的处理好友邀请的函数。
      *
      * @param
-     *      whisper     [输入] Whisper客户端对象的句柄。
+     *      whisper     [输入] Whisper节点对象的句柄。
      * @param
      *      from        [输入] 发送邀请的用户ID。
      * @param
@@ -996,8 +1120,7 @@ typedef struct WhisperCallbacks {
      *      context     [输入] 应用程序定义的环境信息。
      */
     void (*friend_invite)(Whisper *whisper, const char *from,
-                          const char *data, size_t len,
-                          void *context);
+                          const char *data, size_t len, void *context);
 
 } WhisperCallbacks;
 
@@ -1027,7 +1150,29 @@ typedef struct WhisperCallbacks {
  */
 WHISPER_API
 void whisper_log_init(WhisperLogLevel level, const char *log_file,
-        void (*log_printer)(const char *format, va_list args));
+                      void (*log_printer)(const char *format, va_list args));
+
+/**
+ * \~English
+ * Check if the whisper address is valid.
+ *
+ * @param
+ *      address     [in] the whisper address to be check.
+ *
+ * @return
+ *      true if address is valid, or false if address is not valid.
+ *
+ * \~Chinese
+ * 检查Whisper地址标识是否有效。
+ *
+ * @param
+ *      address     [输入] 要检查的Whisper地址标识。
+ *
+ * @return
+ *      如果有效，返回true;如果无效，返回false。
+ */
+WHISPER_API
+bool whisper_address_is_valid(const char *address);
 
 /**
  * \~English
@@ -1046,15 +1191,15 @@ void whisper_log_init(WhisperLogLevel level, const char *log_file,
  *      id          [输入] 要检查的Whisper ID。
  *
  * @return
-        如果有效，返回true;如果无效，返回false。
+ *      如果有效，返回true;如果无效，返回false。
  */
 WHISPER_API
 bool whisper_id_is_valid(const char *id);
 
 /**
  * \~English
- * Create a new Whisper client instance. after create the instance, it's
- * ready for connection to the server
+ * Create a new Whisper node instance. after creating the instance, it's
+ * ready for connection to Whisper network.
  *
  * @param
  *      options     [in] A pointer to a valid WhisperOptions structure.
@@ -1064,12 +1209,12 @@ bool whisper_id_is_valid(const char *id);
  *      context     [in] The application defined context data.
  *
  * @return
- *      If no error occurs, return the pointer of Whisper client instance.
+ *      If no error occurs, return the pointer of Whisper node instance.
  *      Otherwise, return NULL, and a specific error code can be
  *      retrieved by calling whisper_get_error().
  *
  * \~Chinese
- * 创建一个Whisper对象。创建之后，准备连接到服务器。
+ * 创建一个Whisper节点对象。创建之后，准备连接到Whisper网络。
  *
  * @param
  *      options     [输入] 指向一个有效的WhisperOptions结构体的指针。
@@ -1079,7 +1224,7 @@ bool whisper_id_is_valid(const char *id);
  *      context     [输入] 应用程序定义的环境信息。
  *
  * @return
- *      如果不出错，返回一个指向Whisper客户端对象的指针。
+ *      如果不出错，返回一个指向Whisper节点对象的指针。
  *      否则，返回空指针，并可以通过调用whisper_get_error()函数获取错误码。
  */
 WHISPER_API
@@ -1088,23 +1233,23 @@ Whisper *whisper_new(const WhisperOptions *options,
 
 /**
  * \~English
- * Disconnect from the server, and destroy all associated resources with the
- * Whisper client instance.
+ * Disconnect from Whisper network, and destroy all associated resources
+ * with the Whisper node instance.
  *
  * After calling the function, the Whisper pointer becomes invalid.
- * No other function can be called.
+ * No other functions can be called.
  *
  * @param
- *      whisper     [in] A handle identifying the Whisper client instance
+ *      whisper     [in] A handle identifying the Whisper node instance
  *                       to kill.
  *
  * \~Chinese
- * 断开与服务器的连接，并清理所有与Whisper客户端对象有关的资源。
+ * 断开与Whisper网络的连接，并清理所有与Whisper节点对象关联的资源。
  *
  * 调用之后，Whisper指针失效。不能再调用其他函数。
  *
  * @param
- *      whisper     [输入] 要终止的客户端对象的句柄。
+ *      whisper     [输入] 要终止的Whisper节点对象的句柄。
  */
 WHISPER_API
 void whisper_kill(Whisper *whisper);
@@ -1118,49 +1263,49 @@ void whisper_kill(Whisper *whisper);
  *****************************************************************************/
 /**
  * \~English
- * Attempts to connect the client to server, if the client successfully
- * connects to the server, then start the client's main event loop.
+ * Attempts to connect the node to Whisper network. If the node successfully
+ * connects to Whisper network, then it starts the node's main event loop.
  * The connect options was specified by previously create options.
- * @see whisper_create().
+ * @see whisper_new().
  *
  * @param
- *      whisper     [in] A handle identifying the Whisper client instance.
+ *      whisper     [in] A handle identifying the Whisper node instance.
  * @param
  *      interval    [in] Internal loop interval, in milliseconds.
  *
  * @return
- *      0 if the client successfully connected to the server and start the
+ *      0 if the client successfully connected to Whisper network and start the
  *      event loop. Otherwise, return -1, and a specific error code can be
  *      retrieved by calling whisper_get_error().
  *
  * \~Chinese
- * 客户端尝试连接到服务器，如果连接成功，开启客户端的事件循环。
+ * Whisper节点尝试连接到Whisper网络，如果连接成功，开启该节点的事件处理。
  * 连接选项通过之前创建时提供的选项指定。
- * @参照 whisper_create()。
+ * @参照 whisper_new()。
  *
  * @param
- *      whisper     [输入] 标识Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  *
  * @param
  *      interval    [输入] 内部循环间隔周期，以毫秒为单位。
  *
  * @return
- *      如果客户端成功地连接到服务器并开启了事件循环，返回0。否则，返回-1,
+ *      如果Whisper节点成功地连接到Whisper网络并开启了事件处理，返回0。否则，返回-1,
  *      并可以通过调用whisper_get_error()获取错误码。
  */
 WHISPER_API
 int whisper_run(Whisper *whisper, int interval);
 
 /******************************************************************************
- * Internal client information
+ * Internal node information
  *****************************************************************************/
 
 /**
  * \~English
- * Get app identifier associated with the Whisper client.
+ * Get app identifier associated with this Whisper node.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      appid       [out] The buffer that will receive the identifier.
  *                        The buffer size should at least
@@ -1172,13 +1317,13 @@ int whisper_run(Whisper *whisper, int interval);
  *      The appId string pointer, or NULL if buffer is too small.
  *
  * \~Chinese
- * 获取与客户端关联的应用程序标识。
+ * 获取与Whisper节点关联的应用程序标识。
  *
  * @param
- *      whisper     [输入] Whispser客户端对象的句柄。
+ *      whisper     [输入] Whispser节点对象的句柄。
  * @param
  *      appid       [输出] 用来存放应用程序标识的存储空间。
- *                         存储空间至少要有WHISPER_MAX_ID_LEN+1个字节。
+ *                        存储空间至少要有WHISPER_MAX_ID_LEN+1个字节。
  * @param
  *      len         [输入] appid存储空间的长度。
  *
@@ -1190,10 +1335,43 @@ char *whisper_get_appid(Whisper *whisper, char *appid, size_t len);
 
 /**
  * \~English
- * Get node identifier associated with the Whisper client.
+ * Get user address associated with the Whisper node.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
+ * @param
+ *      address     [out] The buffer that will receive the address.
+ *                        The buffer size should at least
+ *                        (WHISPER_MAX_ADDRESS_LEN + 1) bytes.
+ * @param
+ *      len         [in] The buffer size of address.
+ *
+ * @return
+ *      The address string pointer, or NULL if buffer is too small.
+ *
+ * \~Chinese
+ * 获取与Whisper节点关联的地址标识。
+ *
+ * @param
+ *      whisper     [输入] Whisper节点对象的句柄。
+ * @param
+ *      address     [输出] 用来存储节点地址标识的存储空间。
+ *                        存储空间至少要有WHISPER_MAX_ADDRESS_LEN+1个字节。
+ * @param
+ *      len         [输入] 地址标识存储空间的长度。
+ *
+ * @return
+ *      指向用户地址标识字符串的指针，如果提供的存储空间太小则返回空指针。
+ */
+WHISPER_API
+char *whisper_get_address(Whisper *whisper, char *address, size_t len);
+
+/**
+ * \~English
+ * Get node identifier associated with this Whisper node.
+ *
+ * @param
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      nodeid      [out] The buffer that will receive the identifier.
  *                        The buffer size should at least
@@ -1205,10 +1383,10 @@ char *whisper_get_appid(Whisper *whisper, char *appid, size_t len);
  *      The nodeId string pointer, or NULL if buffer is too small.
  *
  * \~Chinese
- * 获取与Whisper客户端关联的节点标识。
+ * 获取与Whisper节点关联的节点标识。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
  *      nodeid      [输出] 用来存储节点标识的存储空间。
  *                         存储空间至少要有WHISPER_MAX_ID_LEN+1个字节。
@@ -1223,10 +1401,10 @@ char *whisper_get_nodeid(Whisper *whisper, char *nodeid, size_t len);
 
 /**
  * \~English
- * Get user identifier associated with the Whisper client.
+ * Get user identifier associated with this Whisper node.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      userid      [out] The buffer that will receive the identifier.
  *                        The buffer size should at least
@@ -1238,13 +1416,13 @@ char *whisper_get_nodeid(Whisper *whisper, char *nodeid, size_t len);
  *      The userId string pointer, or NULL if buffer is too small.
  *
  * \~Chinese
- * 获取与Whisper客户端关联的用户标识。
+ * 获取与Whisper节点关联的用户标识。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
  *      userid      [输出] 用来存储节点标识的存储空间。
- *                         存储空间至少要有WHISPER_MAX_ID_LEN+1个字节。
+ *                        存储空间至少要有WHISPER_MAX_ID_LEN+1个字节。
  * @param
  *      len         [输入] nodeid存储空间的长度。
  *
@@ -1256,10 +1434,10 @@ char *whisper_get_userid(Whisper *whisper, char *userid, size_t len);
 
 /**
  * \~English
- * Get user login name associated with the Whisper client.
+ * Get user login name associated with this Whisper node.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      login       [out] The buffer that will receive the login name.
  *                        The buffer size should at least
@@ -1271,13 +1449,13 @@ char *whisper_get_userid(Whisper *whisper, char *userid, size_t len);
  *      The login string pointer, or NULL if buffer is too small.
  *
  * \~Chinese
- * 获取与客户端关联的登录名。
+ * 获取与Whisper节点关联的登录名。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
  *      login       [输出] 用来存储登录名的存储空间。
- *                         存储空间至少要有WHISPER_MAX_LOGIN_LEN+1个字节。
+ *                        存储空间至少要有WHISPER_MAX_LOGIN_LEN+1个字节。
  * @param
  *      len         [输入] login存储空间的长度。
  *
@@ -1292,15 +1470,76 @@ char *whisper_get_login(Whisper *whisper, char *login, size_t len);
  *****************************************************************************/
 
 /**
+ * \~Egnlish
+ * Update the nospam for Whisper address.
+ *
+ * Update the 4-byte nospam part of the Whisper address with host byte order
+ * expected. Nospam for Whisper address is used to eliminate spam friend
+ * request.
+ *
+ * @param
+ *      whisper     [in] A handle to the Whisper node instance.
+ * @param
+ *      nospam      [in] An 4-bytes unsigned integer.
+ *
+ * @return
+ *      0 on success, or -1 if an error occurred. The specific error code
+ *      can be retrieved by calling whisper_get_error().
+ *
+ * \~Chinese.
+ * 更新Whisper地址标识的验证码。
+ *
+ * 更新4字节的Whisper地址标识的验证码，用以防止伪好友恶意邀请拒绝式攻击。该值以本地
+ * 机器端字节序。
+ *
+ * @param
+ *      whisper     [输入] Whisper节点对象的句柄。
+ * @param
+ *      nospam      [输入] 任意4字节无符号整数。
+ */
+WHISPER_API
+int whisper_set_self_nospam(Whisper *whisper, uint32_t nospam);
+
+/**
+ * \~Egnlish
+ * Get the nospam for Whisper address.
+ *
+ * Get the 4-byte nospam part of the Whisper address with host byte order
+ * expected. Nospam for Whisper address is used to eliminate spam friend
+ * request.
+ *
+ * @param
+ *      whisper     [in] A handle to the Whisper node instance.
+ * @param
+ *      nospam      [in] An unsigned integer pointer to receive nospam value.
+ * @return
+ *      0 on success, or -1 if an error occurred. The specific error code
+ *      can be retrieved by calling whisper_get_error().
+ *
+ * \~Chinese.
+ * 获取Whisper地址标识的验证码。
+ *
+ * 获取4字节的Whisper地址标识的验证码，用以防止伪好友恶意邀请拒绝式攻击。该值以本地
+ * 机器端字节序。
+ *
+ * @param
+ *      whisper     [输入] Whisper节点对象的句柄。
+ * @param
+ *      nospam      [输入] 指向存放任意4字节无符号整数的指针地址。
+ */
+WHISPER_API
+int whisper_get_self_nospam(Whisper *whisper, uint32_t *nospam);
+
+/**
  * \~English
  * Update self information.
  *
- * After self information changed, client will update self information
- * to server. then server will broadcast the change to all friends and
- * the other node that current user signed in.
+ * As self information changed, Whisper node would update itself information
+ * to Whisper network, which would forward the change to all friends and
+ * the other nodes signed with current login or userid.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      info        [in] The WhisperUserInfo pointer to the updated user info.
  *
@@ -1311,11 +1550,11 @@ char *whisper_get_login(Whisper *whisper, char *login, size_t len);
  * \~Chinese
  * 更新自己的信息。
  *
- * 在个人的信息修改后，客户端会将自己的信息更新到服务器。
- * 之后服务器就向该客户端的朋友和当前登录的节点广播更新后的信息。
+ * 在个人的信息修改后，Whisper节点会将自己的信息更新到Whisper网络。
+ * 之后Whisper网络就向该Whisper节点的所有好友和以同一身份登录的其他所有节点广播更新后的信息。
  *
  * @param
- *      whisper     [输入] Whisper客户端实例的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
  *      info        [输入] 指向WhisperUserInfo结构体的新用户信息的指针。
  *
@@ -1331,7 +1570,7 @@ int whisper_set_self_info(Whisper *whisper, const WhisperUserInfo *info);
  * Get self information.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      info        [in] The WhisperUserInfo pointer to receive user info.
  *
@@ -1340,10 +1579,10 @@ int whisper_set_self_info(Whisper *whisper, const WhisperUserInfo *info);
  *      can be retrieved by calling whisper_get_error().
  *
  * \~Chinese
- * 获取自己的信息。
+ * 获取自己的用户信息。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
  *      info        [输入] 用于接收用户信息的WhisperUserInfo类型的结构体的地址。
  *
@@ -1358,11 +1597,11 @@ int whisper_get_self_info(Whisper *whisper, WhisperUserInfo *info);
  * \~English
  * Set node information.
  *
- * After node information changed, client will update node information
- * to server.
+ * As node information changed, client would update node information
+ * to Whisper network.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      info        [in] The WhisperNodeInfo pointer to the updated node info.
  *
@@ -1373,10 +1612,10 @@ int whisper_get_self_info(Whisper *whisper, WhisperUserInfo *info);
  * \~Chinese
  * 设置节点信息。
  *
- * 在节点信息修改后，客户端会将自己的信息更新到服务器。
+ * 在节点信息修改后，Whisper节点会将自己的信息更新到Whisper网络。
  *
  * @param
- *      whisper     [输入] 客户端实例句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
  *      info        [输入] 新的WhisperNodeInfo结构体的地址。
  *
@@ -1392,7 +1631,7 @@ int whisper_set_node_info(Whisper *whisper, const WhisperNodeInfo *info);
  * Get node information.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      info        [in] The WhisperNodeInfo pointer to receive the node info.
  *
@@ -1404,7 +1643,7 @@ int whisper_set_node_info(Whisper *whisper, const WhisperNodeInfo *info);
  * 获取节点信息。
  *
  * @param
- *      whisper     [输入] 客户端实例句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
  *      info        [输入] 用于保存节点信息的WhisperNodeInfo类型的结构体的地址。
  *
@@ -1417,22 +1656,78 @@ int whisper_get_node_info(Whisper *whisper, WhisperNodeInfo *info);
 
 /**
  * \~English
- * Check if whisper client instance is being ready.
+ * Set self presence status.
  *
- * All whisper interactive APIs should be called only if whisper instace 
+ * @param
+ *      whisper     [in] A handle to the Whisper node instance.
+ * @param
+ *      presence    [in] the new presence status.
+ *
+ * @return
+ *      0 on success, or -1 if an error occurred. The specific error code
+ *      can be retrieved by calling whisper_get_error().
+ *
+ * \~Chinese
+ * 设置节点的在线状态。
+ *
+ * @param
+ *      whisper     [输入] Whisper节点对象的句柄。
+ * @param
+ *      presence    [输入] 指定更新的在线状态值
+ *
+ * @return
+ *      如果成功，返回0。如果出错，返回-1，并可以通过调用whisper_get_error()
+ *      获取错误码。
+ */
+WHISPER_API
+int whisper_set_self_presence(Whisper *whisper, WhisperPresenceStatus presence);
+
+/**
+ * \~English
+ * Get self presence status.
+ *
+ * @param
+ *      whisper     [in] A handle to the Whisper node instance.
+ * @param
+ *      presence    [in] A pointer to receive presence status value.
+ *
+ * @return
+ *      0 on success, or -1 if an error occurred. The specific error code
+ *      can be retrieved by calling whisper_get_error().
+ *
+ * \~Chinese
+ * 获取节点的在线状态。
+ *
+ * @param
+ *      whisper     [输入] Whisper节点对象的句柄。
+ * @param
+ *      presence    [输入] 指向存放在线状态值的指针地址。
+ *
+ * @return
+ *      如果成功，返回0。如果出错，返回-1，并可以通过调用whisper_get_error()
+ *      获取错误码。
+ */
+WHISPER_API
+int whisper_get_self_presence(Whisper *whisper, WhisperPresenceStatus *presence);
+
+/**
+ * \~English
+ * Check if Whisper node instance is being ready.
+ *
+ * All whisper interactive APIs should be called only if whisper instance
  * is being ready.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  *
  * @return
- *      true if the whisper client instance is ready, or false if not.
+ *      true if the whisper node instance is ready, or false if not.
  *
  * \~Chinese
- * 检查Whisper客户端实例是否可以调用交互式Whisper接口。
+ * 检查Whisper节点实例是否可以调用交互式Whisper接口。
  *
  * @param
- *      whisper     [输入] 客户端实例句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  *
  * @return
  *      如果准备完成，则返回true。否则，返回false。
@@ -1449,7 +1744,7 @@ bool whisper_is_ready(Whisper *whisper);
  * Whisper client entrustment type to friend.
  *
  * \~Chinese
- * Whisper客户端相对于朋友的委托类型。
+ * Whisper节点相对于好友的委托类型。
  */
 typedef enum WhisperEntrustmentType {
     /**
@@ -1495,17 +1790,17 @@ typedef enum WhisperEntrustmentType {
  *      false to stop iterate.
  *
  * \~Chinese
- * 应用程序定义的遍历每个朋友列表的函数。
+ * 应用程序定义的遍历每个好友列表的函数。
  *
- * WhisperFriendsCallback为回调函数类型。
+ * WhisperFriendsIterateCallback为回调函数类型。
  *
  * @param
- *      info        [输入] 表示一个朋友的WhisperFriendInfo结构体类型的地址。
+ *      info        [输入] 表示一个好友的WhisperFriendInfo结构体类型的地址。
  * @param
  *      context     [输入] 应用程序定义的环境信息。
  *
  * @return
- *      如果继续迭代下一个朋友的信息，返回true。如果停止迭代，返回false。
+ *      如果继续迭代下一个好友的信息，返回true。如果停止迭代，返回false。
  */
 typedef bool WhisperFriendsIterateCallback(const WhisperFriendInfo *info,
                                            void *context);
@@ -1515,7 +1810,7 @@ typedef bool WhisperFriendsIterateCallback(const WhisperFriendInfo *info,
  * iterate callback.
  *
  * @param
- *      whisper     [in] a handle to the Whisper client instance.
+ *      whisper     [in] a handle to the Whisper node instance.
  * @param
  *      callback    [in] a pointer to WhisperFriendsIterateCallback function.
  * @param
@@ -1526,10 +1821,10 @@ typedef bool WhisperFriendsIterateCallback(const WhisperFriendInfo *info,
  *      can be retrieved by calling whisper_get_error().
  *
  * \~Chinese
- * 对于每一个朋友，都会调用应用程序定义的迭代回调函数。
+ * 对于每一个好友，都会调用应用程序定义的迭代回调函数。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
  *      callback    [输入] WhisperFriendsIterateCallback类型的函数的地址。
  * @param
@@ -1548,7 +1843,7 @@ int whisper_get_friends(Whisper *whisper,
  * Get friend information.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      friendid    [in] The friend's user id.
  * @param
@@ -1560,14 +1855,14 @@ int whisper_get_friends(Whisper *whisper,
  *      can be retrieved by calling whisper_get_error().
  *
  * \~Chinese
- * 获取朋友信息。
+ * 获取好友信息。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
- *      friendid    [输入] 朋友的用户ID。
+ *      friendid    [输入] 好友的用户ID。
  * @param
- *      info        [输入] 保存朋友信息的WhisperFriendInfo结构体的地址。
+ *      info        [输入] 保存好友信息的WhisperFriendInfo结构体的地址。
  *
  * @return
  *      如果成功，返回0。如果出错，返回-1，并可以通过调用whisper_get_error()
@@ -1584,7 +1879,7 @@ int whisper_get_friend_info(Whisper *whisper, const char *friendid,
  * If the value length is 0 or value is NULL, the attribute will be cleared.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      friendid    [in] The friend's user id.
  * @param
@@ -1599,16 +1894,16 @@ int whisper_get_friend_info(Whisper *whisper, const char *friendid,
  *      seen by yourself only, and has no impact to the target friend.
  *
  * \~Chinese
- * 设置指定朋友的标签。
+ * 设置指定好友的标签。
  *
- * 如果值的长度为0或者值为空，朋友的标签会被清空。
+ * 如果值的长度为0或者值为空，好友的标签会被清空。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
- *      friendid    [输入] 朋友的用户ID。
+ *      friendid    [输入] 好友的用户ID。
  * @param
- *      label       [输入] 指定朋友的新标签。
+ *      label       [输入] 指定好友的新标签。
  *
  * @return
  *      如果成功，返回0。如果出错，返回-1，并可以通过调用whisper_get_error()
@@ -1623,7 +1918,7 @@ int whisper_set_friend_label(Whisper *whisper,
  * Check if the user ID is friend.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      userid      [in] The userid to check.
  *
@@ -1631,55 +1926,55 @@ int whisper_set_friend_label(Whisper *whisper,
  *      true if the user id is friend, or false if not;
  *
  * \~Chinese
- * 检查用户ID是否为朋友。
+ * 检查用户ID是否为好友。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
  *      userid      [输入] 要检查的用户ID。
  *
  * @return
- *      如果ID对应的用户为朋友，返回true。否则，返回false。
+ *      如果ID对应的用户为好友，返回true。否则，返回false。
  */
 WHISPER_API
-bool whisper_is_friend(Whisper* whisper, const char* userid);
+bool whisper_is_friend(Whisper *whisper, const char *userid);
 
 /******************************************************************************
- * Friend requests & add & remove
+ * Friend add & remove
  *****************************************************************************/
 
 /**
  * \~English
- * Attempt to send a new friend request.
+ * Attempt to add friend by sending a new friend request.
  *
- * This function will send a friend request to server, and the server
- * return the result within a friend response. The whisper client can
- * check whether the friend request be confirmed or refused in friend
- * response callback.
+ * This function would send a friend request to target, and later a friend
+ * response containing the result to requet would be received from that
+ * target.The whisper node can check whether the friend request be accepted
+ * or refused in friend response callback.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
- *      userid      [in] The target user id.
+ *      address     [in] The target user address.
  * @param
  *      hello       [in] PIN for target user, or any application defined
  *                       content.
  *
  * @return
- *      0 if the friend request successfully send to the server.
+ *      0 if the friend request successfully sent.
  *      Otherwise, return -1, and a specific error code can be
  *      retrieved by calling whisper_get_error().
  *
  * \~Chinese
- * 尝试发送朋友请求。
+ * 尝试发送好友请求。
  *
- * 此函数会发一个朋友请求到服务器，服务器将处理结果回复给客户端。
- * 客户端可以在服务器的回复中检查朋友请求是否被同意、拒绝。
+ * 此函数会发一个好友请求给目标端，目标端将确认结果回复给当前节点。
+ * 客户端可以响应回调函数中检查好友请求是否被接受或拒绝。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
- *      userid      [输入] 目标用户ID。
+ *      address     [输入] 目标用户地址标识。
  * @param
  *      hello       [输入] 目标用户的密码，或者任何应用程序定义的内容。
  *
@@ -1688,50 +1983,41 @@ bool whisper_is_friend(Whisper* whisper, const char* userid);
  *      获取错误码。
  */
 WHISPER_API
-int whisper_friend_request(Whisper *whisper, const char *userid, const char *hello);
+int whisper_add_friend(Whisper *whisper, const char *address, const char *hello);
 
 /**
  * \~English
- * Reply the friend request.
+ * Accept the friend request
  *
- * This function will send a friend response to server.
+ * This function will send confirmed response to requester for it being
+ * accepted as a new friend.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
- *      userid      [in] The user id who wants friend with self.
- * @param
- *      status      [in] The status code of the response.
- *                       0 is success, otherwise is error.
- * @param
- *      reason      [in] The error message if status is error, or NULL
- *                       if success.
+ *      userid      [in] The user id who wants to be friend with us.
  * @param
  *      entrusted   [in] Entrust this friend or not.
  * @param
  *      expire      [in] Expire time with strict pattern "yyyy-MM-dd,hh:mm",
- *                       or NULL never expire.
+ *                       or NULL for never expire.
  *
  * @return
- *      0 if the friend request successfully send to the server.
+ *      0 if the confirmed message successfully sent.
  *      Otherwise, return -1, and a specific error code can be
  *      retrieved by calling whisper_get_error().
  *
  * \~Chinese
- * 回复朋友请求。
+ * 接受加为好友
  *
- * 此函数会发一个朋友响应到服务器。
+ * 此函数会发送确认加为好友的消息给请求者。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
- *      userid      [输入] 想和自己成为朋友的用户的ID。
+ *      userid      [输入] 待加为好友的用户ID。
  * @param
- *      status      [输入] 响应的状态码。0表示成功，否则表示出错。
- * @param
- *      reason      [输入] 如果出错，表示错误信息。如果成功，为空。
- * @param
- *      entrusted   [输入] 是否接受朋友的委托。
+ *      entrusted   [输入] 是否赋于该好友委托权。
  * @param
  *      expire      [输入] 超时时间，格式为"yyyy-MM-dd,hh:mm", 为空表示永不超时。
  *
@@ -1740,49 +2026,84 @@ int whisper_friend_request(Whisper *whisper, const char *userid, const char *hel
  *      获取错误码。
  */
 WHISPER_API
-int whisper_reply_friend_request(Whisper *whisper, const char *userid,
-                                 int status, const char *reason,
-                                 bool entrusted,
-                                 const char *expire);
+int whisper_accept_friend(Whisper *whisper, const char *userid,
+                          bool entrusted, const char *expire);
 
 /**
  * \~English
- * Remove a friend.
+ * Refuse the friend request.
  *
- * This function will send a remove friend indicator to server.
- *
- * If all correct, the server will clean the friend relationship, and send
- * friend removed message to both.
+ * This function will send refusal message with certain reason to requester.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
- *      userid      [in] The target user id.
+ *      userid      [in] The user id who wants to be friend with us.
+ * @param
+ *      reason      [in] The error message, which can not be NULL.
  *
  * @return
- *      0 if the indicator successfully send to the server.
+ *      0 if the refusal message successfully sent to requester.
  *      Otherwise, return -1, and a specific error code can be
  *      retrieved by calling whisper_get_error().
  *
  * \~Chinese
- * 删除朋友
+ * 拒绝加为好友
  *
- * 此函数会给服务器发送一个删除朋友的指示。
- *
- * 如果操作成功，服务器将会删除客户端和朋友之间的关系，并给双方发送
- * 删除朋友的消息。
+ * 此函数会发送拒绝加友的响应消息给请求者。
  *
  * @param
- *      whisper     [输入] 客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
- *      userid      [输入] 要删除的朋友ID。
+ *      userid      [输入] 待加为好友的用户ID。
+ * @param
+ *      reason      [输入] 拒绝加为好友的原因，不能为空。
+ *
+ * @return
+ *      如果发送成功，返回0。如果出错，返回-1，并可以通过调用whisper_get_error()
+ *      获取错误码。
+ */
+WHISPER_API
+int whisper_refuse_friend(Whisper *whisper, const char *userid,
+                          const char *reason);
+/**
+ * \~English
+ * Remove a friend.
+ *
+ * This function will send a remove friend indicator to Whisper network.
+ *
+ * If all correct, Whisper network will clean the friend relationship, and
+ * send friend removed message to both.
+ *
+ * @param
+ *      whisper     [in] A handle to the Whisper node instance.
+ * @param
+ *      userid      [in] The target user id.
+ *
+ * @return
+ *      0 if the indicator successfully sent.
+ *      Otherwise, return -1, and a specific error code can be
+ *      retrieved by calling whisper_get_error().
+ *
+ * \~Chinese
+ * 删除好友
+ *
+ * 此函数会给Whisper网络发送一个删除好友的指示。
+ *
+ * 如果操作成功，Whisper网络将会删除Whisper节点和好友之间的关系，并给双方发送
+ * 删除好友的消息。
+ *
+ * @param
+ *      whisper     [输入] Whisper节点对象的句柄。
+ * @param
+ *      userid      [输入] 待删除的好友ID。
  *
  * @return
  *      如果指示发送成功，返回0。否则，返回-1，并可以通过调用whisper_get_error()
  *      获取错误码。
  */
 WHISPER_API
-int whisper_friend_remove(Whisper *whisper, const char *userid);
+int whisper_remove_friend(Whisper *whisper, const char *userid);
 
 /******************************************************************************
  * Application transactions between friends
@@ -1794,14 +2115,15 @@ int whisper_friend_remove(Whisper *whisper, const char *userid);
  *
  * The message length may not exceed WHISPER_MAX_APP_MESSAGE_LEN, and message
  * itself should be text-formatted. Larger messages must be split by application
- * and sent as separate messages. Other clients can reassemble the fragments.
+ * and sent as separate messages. Other whisper nodes can reassemble the
+ * fragments.
  *
  * Message may not be empty or NULL.
  *
  * If the message is binary, it will encoded to text use base64.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      to          [in] The target id(userid or userid@nodeid).
  * @param
@@ -1810,15 +2132,15 @@ int whisper_friend_remove(Whisper *whisper, const char *userid);
  *      len         [in] The message length in bytes.
  *
  * @return
- *      0 if the text message successfully send to the server.
+ *      0 if the text message successfully sent.
  *      Otherwise, return -1, and a specific error code can be
  *      retrieved by calling whisper_get_error().
  *
  * \~Chinese
- * 给朋友发送消息。
+ * 给好友发送消息。
  *
  * 消息长度不能超过WHISPER_MAX_APP_MESSAGE_LEN，消息本身必须是文本格式。
- * 当要发送较长的消息时，应用程序应当将长消息拆成短消息发送，其他的客户端
+ * 当要发送较长的消息时，应用程序应当将长消息拆成短消息发送，对端的Whisper节点
  * 收到后将短消息组装成长消息。
  *
  * 消息不能为空。
@@ -1826,7 +2148,7 @@ int whisper_friend_remove(Whisper *whisper, const char *userid);
  * 如果消息是二进制的，应当先按base64方式先编码再发送。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
  *      to          [输入] 接收消息的用户ID(用户ID或者用户ID@节点ID)。
  * @param
@@ -1849,7 +2171,7 @@ int whisper_send_friend_message(Whisper *whisper, const char *to,
  * WhisperFriendInviteResponseCallback is the callback function type.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      from        [in] The target user id.
  * @param
@@ -1865,20 +2187,20 @@ int whisper_send_friend_message(Whisper *whisper, const char *to,
  *      context      [in] The application defined context data.
  *
  * \~Chinese
- * 应用程序定义的处理朋友邀请响应的函数。
+ * 应用程序定义的处理好友邀请响应的函数。
  *
  * WhisperFriendInviteResponseCallback为回调函数类型。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
- *      from        [输入] 被邀请的朋友用户ID。
+ *      from        [输入] 被邀请的好友用户ID。
  * @param
  *      status      [输入] 响应的状态码，0表示成功，其他表示出错。
  * @param
  *      reason      [输入] 出错时的原因。
  * @param
- *      data        [输入] 应用程序定义的从被邀请的朋友那里发来的数据。
+ *      data        [输入] 应用程序定义的从被邀请的好友那里发来的数据。
  * @param
  *      len         [输入] 以字节为单位的数据长度。
  * @param
@@ -1898,7 +2220,7 @@ typedef void WhisperFriendInviteResponseCallback(Whisper *whisper,
  * request, and the data will send to target friend.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      to          [in] The target id(userid or userid@nodeid).
  * @param
@@ -1917,12 +2239,12 @@ typedef void WhisperFriendInviteResponseCallback(Whisper *whisper,
  *      retrieved by calling whisper_get_error().
  *
  * \~Chinese
- * 给朋友发送邀请。
+ * 给好友发送邀请。
  *
- * 应用程序可以在邀请中附加应用程序定义的数据，这些数据会发给朋友。
+ * 应用程序可以在邀请中附加应用程序定义的数据，这些数据会发给好友。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
  *      to          [输入] 接收邀请的用户ID(userid or userid@nodeid)。
  * @param
@@ -1952,7 +2274,7 @@ int whisper_invite_friend(Whisper *whisper, const char *to,
  * This function will send a invite response to friend.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      to          [in] The id(userid@nodeid) who send invite request.
  * @param
@@ -1974,20 +2296,20 @@ int whisper_invite_friend(Whisper *whisper, const char *to,
  *      retrieved by calling whisper_get_error().
  *
  * \~Chinese
- * 回复朋友的邀请。
+ * 回复好友邀请。
  *
- * 此函数会给朋友发送一个邀请响应。
+ * 此函数会给好友发送一个邀请响应。
  *
  * @param
- *      whisper     [输入] Whisper客户端对象的句柄。
+ *      whisper     [输入] Whisper节点对象的句柄。
  * @param
- *      to          [输入] 发送邀请的朋友ID(userid@nodeid)。
+ *      to          [输入] 发送邀请的好友ID(userid@nodeid)。
  * @param
  *      status      [输入] 邀请响应的状态码，0表示成功，其他表示出错。
  * @param
  *      reason      [输入] 出错时的原因，成功时为空。
  * @param
- *      data        [输入] 应用程序定义的回复给发送邀请的朋友的数据。
+ *      data        [输入] 应用程序定义的回复给发送邀请的好友的私有数据。
  *                         此参数的值在出错时会被忽略。
  * @param
  *      len         [输入] 以字节为单位的数据的长度。
@@ -2001,6 +2323,96 @@ int whisper_reply_friend_invite(Whisper *whisper, const char *to,
                                 int status, const char *reason,
                                 const char *data, size_t len);
 
+/**
+ * \~English
+ * A structure representing the Whisper TURN server.
+ *
+ * The TURN server is essential part to help establish sessions between
+ * two Whisper nodes. And applications can acquire TURN server from
+ * whisper network.
+ *
+ * \~Chinese
+ * 描述Whisper TURN服务器的信息
+ *
+ * TURN服务器是两个Whisper节点协商建立会话必不可少的一部分。应用程序可以通过调用
+ * 接口从Whisper网络获取TURN服务器信息。
+ */
+typedef struct WhisperTurnServer {
+    /**
+     * \~English
+     * TURN server host.
+     *
+     * \~Chinese
+     * TURN服务器名（或IP地址）。
+     */
+    char server[WHISPER_MAX_TURN_USERNAME_LEN + 1];
+    /**
+     * \~English
+     * TURN server port.
+     *
+     * The default port is 3478.
+     *
+     * \~Chinese
+     * TURN服务端口。
+     *
+     * 默认端口port是3478。
+     */
+    uint16_t port;
+    /**
+     * \~English
+     * TURN server user name.
+     *
+     * \~Chinese
+     * TURN服务器用户名。
+     */
+    char username[WHISPER_MAX_TURN_USERNAME_LEN + 1];
+    /**
+     * \~English
+     * TURN server password.
+     *
+     * \~Chinese
+     * TURN服务器密码。
+     */
+    char password[WHISPER_MAX_TURN_PASSWORD_LEN + 1];
+    /**
+     * \~English
+     * TURN server realm.
+     *
+     * \~Chinese
+     * TURN服务器区域。
+     */
+    char realm[WHISPER_MAX_TURN_REALM_LEN + 1];
+} WhisperTurnServer;
+
+/**
+ * \~English
+ * Get an valid turn server information.
+ *
+ * @param
+ *      whisper     [in] A handle to the Whisper node instance.
+ * @param
+ *      turn_server [in] The buffer to store whisper TURN server.
+ *
+ * @return
+ *      0 if it's successful to get the turn server information.
+ *      Otherwise, return -1, and a specific error code can be
+ *      retrieved by calling whisper_get_error().
+ *
+ * \~Chinese
+ * 获取可用的Turn服务器信息。
+ *
+ * @param
+ *      whisper     [输入] Whisper节点对象的句柄。
+ * @param
+ *      turn_server [输入] 用于存储Turn服务器信息的内存块地址。
+ *
+ * @return
+ *      如果获取到可用的Turn服务器信息，返回0。否则，返回-1，并可以通过调用
+ *      whisper_get_error()获取错误码。
+ */
+WHISPER_API
+int whisper_get_turn_server(Whisper *whisper, WhisperTurnServer *turn_server);
+
 /******************************************************************************
  * Error handling
  *****************************************************************************/
@@ -2013,6 +2425,7 @@ int whisper_reply_friend_invite(Whisper *whisper, const char *to,
 #define WF_HTTP                                 3
 #define WF_MQTT                                 4
 #define WF_ICE                                  5
+#define WF_RESERVED1                            6
 
 
 #define WERR_INVALID_ARGS                       1
@@ -2039,7 +2452,8 @@ int whisper_reply_friend_invite(Whisper *whisper, const char *to,
 #define WERR_SDP_TOO_LONG                       22
 #define WERR_INVALID_SDP                        23
 #define WERR_NOT_IMPLEMENTED                    24
-#define WEER_UNKNOWN                            25
+#define WERR_LIMIT_EXCEEDED                     25
+#define WERR_UNKNOWN                            26
 
 #define W_MK_ERROR(facility, code)  (0x80000000 | ((facility) << 24) | \
                     ((((code) & 0x80000000) >> 8) | ((code) & 0x7FFFFFFF)))

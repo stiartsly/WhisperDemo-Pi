@@ -46,7 +46,7 @@ void onStreamStateChanged(WhisperSession *session, int stream,
 
 bool CSession::start(Whisper *whisper)
 {
-    mSession = whisper_session_new(whisper, mTo->c_str(), WhisperTransportType_ICE);
+    mSession = whisper_session_new(whisper, mTo->c_str(), WhisperTransportType_ICE, NULL);
     if (!mSession) {
         vlogE("New whisper session to %s error: 0x%x", mTo->c_str(),
             whisper_get_error());

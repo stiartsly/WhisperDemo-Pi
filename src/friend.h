@@ -4,18 +4,21 @@
 #include <memory>
 #include <string>
 #include "user.h"
+#include <whisper.h>
 
 class CFriend: public CUser {
 public:
     CFriend(const WhisperFriendInfo *info): CUser(&info->user_info),
         mEntrusted(info->entrusted),
         mLabel(new std::string(info->label)),
-        mPresence(new std::string(info->presence)) {}
+        mPresence(info->presence),
+        mStatus(info->status) {}
 
     CFriend(const WhisperUserInfo *info): CUser(info),
         mEntrusted(0),
         mLabel(NULL),
-        mPresence(NULL) {}
+        mPresence(WhisperPresenceStatus_None),
+        mStatus(WhisperConnectionStatus_Disconnected) {}
 
     ~CFriend() {}
     
@@ -28,8 +31,12 @@ public:
         return mLabel;
     }
 
-    const std::shared_ptr<std::string> presence(void) const {
+    WhisperPresenceStatus presence(void) const {
         return mPresence;
+    }
+
+    WhisperConnectionStatus status(void) const {
+        return mStatus;
     }
 
     void label(const std::shared_ptr<std::string> newValue) {
@@ -37,16 +44,19 @@ public:
             mLabel = newValue;
     }
 
-    void presence(const std::shared_ptr<std::string> newValue) {
-        if (newValue.get())
-            mPresence = newValue;
+    void presence(WhisperPresenceStatus presence) {
+        mPresence = presence;
+    }
+
+    void status(WhisperConnectionStatus status) {
+        mStatus = status;
     }
 
 private:
     int mEntrusted;
-
+    WhisperPresenceStatus mPresence;
+    WhisperConnectionStatus mStatus;
     std::shared_ptr<std::string> mLabel;
-    std::shared_ptr<std::string> mPresence;
 };
 
 #endif /* __FRIEND_H__ */

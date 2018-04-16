@@ -8,7 +8,7 @@
 #include <string>
 #include <map>
 
-#include "whisper.h"
+#include <whisper.h>
 #include "gadget.h"
 #include "session.h"
 
@@ -66,7 +66,7 @@ public:
     void addPeer(const std::string &name, std::shared_ptr<CFriend>, bool sync = true);
     void delPeer(const std::string &name);
     void updatePeer(const std::string &name, std::shared_ptr<CFriend>);
-    void updatePeer(const std::string &name, std::shared_ptr<std::string>);
+    void updatePeer(const std::string &name, WhisperConnectionStatus);
 
     // about session.
     void addSession(const std::string &name, std::shared_ptr<CSession>);

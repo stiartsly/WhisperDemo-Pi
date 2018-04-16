@@ -24,9 +24,6 @@ public:
         const char *_str;
 
         switch(mStatus) {
-        case WhisperConnectionStatus_Connecting:
-            _str = "is connecting to";
-            break;
         case WhisperConnectionStatus_Connected:
             _str = "connected with";
             break;
@@ -116,9 +113,11 @@ static
 void onReady(Whisper *whisper, void *context)
 {
     CAgent *agent = static_cast<CAgent*>(context);
+    char buf[WHISPER_MAX_LOGIN_LEN + 1];
 
-    char login[WHISPER_MAX_ID_LEN + 1];
-    vlogI("Device %s is ready", whisper_get_login(whisper, login, sizeof(login)));
+    vlogI("Device %s is ready", whisper_get_login(whisper, buf, sizeof(buf)));
+    vlogI("User Id: %s", whisper_get_userid(whisper, buf, sizeof(buf)));
+    vlogI("Address: %s", whisper_get_address(whisper, buf, sizeof(buf)));
 
     agent->didReady();
 }
@@ -161,16 +160,14 @@ void onFriendInfo(Whisper *whisper, const char *friendid,
 }
 
 static
-void onFriendPresence(Whisper *whisper, const char *friendid,
-                      const char *presence, void *context)
+void onFriendConnection(Whisper *whisper, const char *friendid,
+                        WhisperConnectionStatus status, void *context)
 {
     CAgent* agent = static_cast<CAgent*>(context);
     assert(agent);
 
     std::string peerName(friendid);
-    std::shared_ptr<std::string> sp(new std::string(presence));
-
-    agent->updatePeer(peerName, sp);
+    agent->updatePeer(peerName, status);
 }
 
 static
@@ -190,13 +187,13 @@ void onFriendRequest(Whisper *whisper,const char *userid, const WhisperUserInfo 
 
     int rc;
 
-    rc = whisper_reply_friend_request(whisper, userid, 0, NULL, true, NULL);
+    rc = whisper_accept_friend(whisper, userid, true, NULL);
     if (rc < 0) {
-        vlogE("Device replied friend request error: 0x%x", whisper_get_error());
+        vlogE("Device accept friend request error: 0x%x", whisper_get_error());
         return;
     }
 
-    vlogI("Device confirmed friend request from %s", userid);
+    vlogI("Device accepted friend request from %s", userid);
 }
 
 static
@@ -348,7 +345,7 @@ bool CAgent::setup(const std::shared_ptr<CConfig> cfg)
         .self_info = onSelfInfo,
         .friend_list = onFriendList,
         .friend_info = onFriendInfo,
-        .friend_presence = onFriendPresence,
+        .friend_connection = onFriendConnection,
         .friend_request = onFriendRequest,
         .friend_response = onFriendResponse,
         .friend_added = onFriendAdded,
@@ -367,29 +364,31 @@ bool CAgent::setup(const std::shared_ptr<CConfig> cfg)
         return false;
     }
 
-    WhisperSessionOptions wsopts = {
-        .transports = WhisperTransportType_ICE,
-        .stun_host = cfg->turnHost(),
-        .stun_port = NULL,
-        .turn_host = cfg->turnHost(),
-        .turn_port = NULL,
-        .turn_username = cfg->username(),
-        .turn_password = cfg->password(),
-        .udp_host = NULL,
-        .udp_port = NULL,
-        .udp_external_host = NULL,
-        .udp_external_port = NULL,
-        .tcp_host = NULL,
-        .tcp_port = NULL,
-        .tcp_external_host = NULL,
-        .tcp_external_port = NULL
+    WhisperTransportOptions opts = {
+        .thread_model = TRANSPORT_SHARED_THREAD,
+        .options = {
+            .ice = {
+                .stun_host = cfg->turnHost(),
+                .stun_port = NULL,
+                .turn_host = cfg->turnHost(),
+                .turn_port = NULL,
+                .turn_username = cfg->username(),
+                .turn_password = cfg->password()
+            }
+        }
     };
 
     int rc;
 
-    rc = whisper_session_init(mWhisper, &wsopts, onSessionRequestCallback, this);
+    rc = whisper_session_init(mWhisper, onSessionRequestCallback, this);
     if (rc < 0) {
         vlogE("Initialize session extension failed: 0x%x", whisper_get_error());
+        return false;
+    }
+
+    rc = whisper_transport_add(mWhisper, WhisperTransportType_ICE, &opts);
+    if (rc < 0) {
+        vlogE("Add ICE transport failed: 0x%x", whisper_get_error());
         return false;
     }
 
@@ -406,7 +405,7 @@ void CAgent::run(void)
         whisper_kill(mWhisper);
 
     }
-    
+
     vlogI("Whisper instance has been killed");
 }
 
@@ -435,7 +434,6 @@ void CAgent::didConnectionStatusChange(WhisperConnectionStatus status)
 
     switch(status) {
     case WhisperConnectionStatus_Disconnected:
-    case WhisperConnectionStatus_Connecting:
     default:
         mIsConnected = false;
         break;
@@ -506,16 +504,14 @@ void CAgent::updatePeer(const std::string &name, std::shared_ptr<CFriend> friend
     }
 }
 
-void CAgent::updatePeer(const std::string &name, std::shared_ptr<std::string> presence)
+void CAgent::updatePeer(const std::string &name, WhisperConnectionStatus status)
 {
-    if (!presence) return;
-
     std::map<std::string, CPeer>::iterator it;
     it = mPeers.find(name);
     if (it != mPeers.end()) {
-        it->second.getFriend()->presence(presence);
+        it->second.getFriend()->status(status);
 
-        if (presence->compare("online") == 0)
+        if (status == WhisperConnectionStatus_Connected)
             refreshPeerGadgets(name);
     }
 }
@@ -534,7 +530,7 @@ void CAgent::reqAddPeer(const std::string &name) const
 {
     int rc;
 
-    rc = whisper_friend_request(mWhisper, name.c_str(), "hello");
+    rc = whisper_add_friend(mWhisper, name.c_str(), "hello");
     if (rc < 0) {
         vlogE("Friend request to %s error (%x)", name.c_str(),
               whisper_get_error());
@@ -544,19 +540,15 @@ void CAgent::reqAddPeer(const std::string &name) const
 void CAgent::listPeers(bool withGadgets) const
 {
     std::map<std::string, CPeer>::const_iterator it;
-    for (it = mPeers.begin(); it != mPeers.end(); ++it) {
+    for (it = mPeers.begin(); it != mPeers.end(); ++it)
         vlogI("Device %s", it->first.c_str());
-    }
 }
 
 std::shared_ptr<CGadget> CAgent::getGadget(const std::string &name) const
 {
     std::map<std::string, std::shared_ptr<CGadget>>::const_iterator it;
     it = mGadgets.find(name);
-    if (it == mGadgets.end())
-        return nullptr;
-    else
-        return it->second;
+    return (it != mGadgets.end() ? it->second : nullptr);
 }
 
 std::shared_ptr<CGadget> CAgent::getGadget(const std::string &peerName,
@@ -564,10 +556,7 @@ std::shared_ptr<CGadget> CAgent::getGadget(const std::string &peerName,
 {
     std::map<std::string, CPeer>::const_iterator it;
     it = mPeers.find(peerName);
-    if (it == mPeers.end())
-        return nullptr;
-    else
-        return it->second.getGadget(gadgetName);
+    return (it == mPeers.end() ? it->second.getGadget(gadgetName) : nullptr);
 }
 
 void CAgent::addGadget(std::shared_ptr<CGadget> gadget)
@@ -739,7 +728,7 @@ void CAgent::handleSync(const std::string &peerName,
                           const std::map<std::string, GadgetValue> &values)
 {
     if (mIsDummy) return;
-    
+
     std::map<std::string, CPeer>::iterator it;
     it = mPeers.find(peerName);
     if (it == mPeers.end())
@@ -802,8 +791,6 @@ void CAgent::refreshPeerGadgets(void) const
 
 void CAgent::sendVideoFrame(const uint8_t *frame, int len)
 {
-    //vlogI("CAgent:%s (len:%d)", __FUNCTION__, len);
-
     std::map<std::string, CPeer>::const_iterator it;
 
     for (it = mPeers.begin(); it != mPeers.end(); ++it) {

@@ -16,7 +16,9 @@
 extern "C" {
 #endif
 
-#define MAX_IP_STRING_LEN   45
+#define WHISPER_MAX_IP_STRING_LEN   45
+
+#define WHISPER_MAX_USER_DATA_LEN   2048
 
 typedef struct WhisperSession WhisperSession;
 
@@ -35,7 +37,7 @@ typedef enum WhisperTransportType {
      * \~Chinese
      * ICE 协议。
      */
-    WhisperTransportType_ICE = 0x01,
+    WhisperTransportType_ICE = 0,
     /**
      * \~English
      * UDP transport protocol.
@@ -43,7 +45,7 @@ typedef enum WhisperTransportType {
      * \~Chinese
      * UDP 传输协议。
      */
-    WhisperTransportType_UDP = 0x02,
+    WhisperTransportType_UDP,
     /**
      * \~English
      * TCP transport protocol.
@@ -51,7 +53,7 @@ typedef enum WhisperTransportType {
      * \~Chinese
      * TCP 传输协议。
      */
-    WhisperTransportType_TCP = 0x04
+    WhisperTransportType_TCP
 } WhisperTransportType;
 
 /**
@@ -112,25 +114,12 @@ typedef enum WhisperStreamType {
 
 /**
  * \~English
- * Whisper session initialize options.
+ * Whisper ICE transport options.
  *
  * \~Chinese
- * Whisper session 初始化选项。
+ * Whisper ICE 传输选项。
  */
-typedef struct WhisperSessionOptions {
-    /**
-     * \~English
-     * Underlying transport options.
-     *
-     * Options can be using ICE, UDP or TCP transport protocols, or
-     * combination of the two or all.
-     *
-     * \~Chinese
-     * 传输协议选项
-     *
-     * 选项可以是使用ICE，UDP 或者TCP等传输协议，或者同时使用二个，甚至全部。
-     */
-    int transports;
+typedef struct IceTransportOptions {
     /**
      * \~English
      * STUN server host name or IP.
@@ -189,6 +178,24 @@ typedef struct WhisperSessionOptions {
     const char *turn_password;
     /**
      * \~English
+     * TURN server realm.
+     *
+     * \~Chinese
+     * TURN服务器ICE协议中域值
+     */
+     const char *turn_realm;
+} IceTransportOptions;
+
+/**
+ * \~English
+ * Whisper UDP transport options.
+ *
+ * \~Chinese
+ * Whisper UDP 传输选项。
+ */
+typedef struct UdpTransportOptions {
+    /**
+     * \~English
      * UDP server hostname or ip.
      *
      * Only valid when using UDP protocol.
@@ -242,6 +249,16 @@ typedef struct WhisperSessionOptions {
      * 只在使用UDP协议并且提供了NAT公网地址映射的情况有效
      */
     const char *udp_external_port;
+} UdpTransportOptions;
+
+/**
+ * \~English
+ * Whisper UDP transport options.
+ *
+ * \~Chinese
+ * Whisper UDP 传输选项。
+ */
+typedef struct TcpTransportOptions {
     /**
      * \~English
      * TCP server hostname or IP.
@@ -298,7 +315,20 @@ typedef struct WhisperSessionOptions {
      * 只在使用TCP协议并且提供了NAT公网地址映射的情况有效
      */
     const char *tcp_external_port;
-} WhisperSessionOptions;
+} TcpTransportOptions;
+
+#define TRANSPORT_SHARED_THREAD         0x01
+#define TRANSPORT_STANDALONE_THREAD     0x02
+
+typedef struct WhisperTransportOptions {
+    int thread_model;
+
+    union {
+        IceTransportOptions ice;
+        UdpTransportOptions udp;
+        TcpTransportOptions tcp;
+    } options;
+} WhisperTransportOptions;
 
 typedef enum WhisperCandidateType {
     WhisperCandidateType_Host,
@@ -316,9 +346,9 @@ typedef enum WhisperNetworkTopology {
 
 typedef struct WhisperAddressInfo {
     WhisperCandidateType type;
-    char addr[MAX_IP_STRING_LEN + 1];
+    char addr[WHISPER_MAX_IP_STRING_LEN + 1];
     int port;
-    char related_addr[MAX_IP_STRING_LEN + 1];
+    char related_addr[WHISPER_MAX_IP_STRING_LEN + 1];
     int related_port;
 } WhisperAddressInfo;
 
@@ -332,13 +362,25 @@ typedef struct WhisperTransportInfo {
 /* Global session APIs */
 
 /**
+ *\~English
+ * Make initialization on Android platform.
+ *
+ * @return
+ *      true if initialization succeeded, or false if not.
+ */
+#if defined(__ANDROID__)
+WHISPER_API
+bool whisper_session_jni_onload(void *vm, void *reserved);
+#endif
+
+/**
  * \~English
  * An application-defined function that handle session requests.
  *
  * WhisperSessionRequestCallback is the callback function type.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      from        [in] The id(userid@nodeid) from who send the message.
  * @param
@@ -355,7 +397,7 @@ typedef struct WhisperTransportInfo {
  * WhisperSessionRequestCallback是回调函数类型。
  *
  * @param
- *      whisper      [输入] 指向Whisper客户实例的句柄。
+ *      whisper      [输入] 指向Whisper节点对象的句柄。
  * @param
  *      from         [输入] 消息发送者的id（userid@nodeid）
  * @param
@@ -377,9 +419,7 @@ typedef void WhisperSessionRequestCallback(Whisper *whisper, const char *from,
  * any session API.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
- * @param
- *      opts        [in] A pointer to a valid WhisperSessionOptions structure.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
  *      callback    [in] A pointer to the application-defined function of type
  *                       WhisperSessionRequestCallback.
@@ -396,9 +436,7 @@ typedef void WhisperSessionRequestCallback(Whisper *whisper, const char *from,
  * 应用必须在调用session API前初始化session扩展。
  *
  * @param
- *     whisper      [输入] 指向Whisper客户实例的句柄。
- * @param
- *     ops          [输入] 指向一个有效WhisperSessionOptions结构的指针。
+ *      whisper      [输入] 指向Whisper节点对象的句柄。
  * @param
  *      callback     [输入] 指向应用定义的WhisperSessionRequestCallback类型函数。
  * @param
@@ -408,7 +446,7 @@ typedef void WhisperSessionRequestCallback(Whisper *whisper, const char *from,
  *     0表示成功，-1表示失败。具体错误可以调用whisper_get_error()来获得。
  */
 WHISPER_API
-int whisper_session_init(Whisper *whisper, WhisperSessionOptions *opts,
+int whisper_session_init(Whisper *whisper, 
                 WhisperSessionRequestCallback *callback, void *context);
 
 /**
@@ -421,7 +459,7 @@ int whisper_session_init(Whisper *whisper, WhisperSessionOptions *opts,
  * If the extension is not initialized, this function has no effect.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  *
  * \~Chinese
  * 清除Whisper session扩展。
@@ -429,10 +467,18 @@ int whisper_session_init(Whisper *whisper, WhisperSessionOptions *opts,
  * 应用必须在退出前调用whisper_session_cleanup，用于清除和扩展相关的资源。
  *
  * @param
- *      whisper     [输入] 指向Whisper客户实例的句柄。
+ *      whisper     [输入] 指向Whisper节点对象的句柄。
  */
 WHISPER_API
 void whisper_session_cleanup(Whisper *whisper);
+
+/* Transport APIs */
+WHISPER_API
+int whisper_transport_add(Whisper *whisper, WhisperTransportType transport,
+                          WhisperTransportOptions *options);
+
+WHISPER_API
+void whisper_transport_remove(Whisper *whisper, WhisperTransportType transport);
 
 /* Session instance APIs */
 
@@ -443,9 +489,11 @@ void whisper_session_cleanup(Whisper *whisper);
  * The session object represent a conversation handle to a friend.
  *
  * @param
- *      whisper     [in] A handle to the Whisper client instance.
+ *      whisper     [in] A handle to the Whisper node instance.
  * @param
- *      to          [in] The target id(userid or userid@nodeid).
+ *      address     [in] The target address.
+ * @param
+ *      options     [in] A pointer to a valid WhisperSessionOptions structure.
  * @param
  *      transport   [in] The transport protocol to use, only can be TCP, UDP
  *                       or ICE exclusively.
@@ -461,19 +509,22 @@ void whisper_session_cleanup(Whisper *whisper);
  * 一个session实例代表一次和friend的会话句柄。
  *
  * @param
- *     whisper      [输入] 指向Whisper客户实例的句柄。
+ *      whisper      [输入] 指向Whisper节点对象的句柄。
  * @param
- *     to           [输入] 目标id（userid 或者 userid@nodeid）。
+ *      address      [输入] 目标地址。
  * @param
- *     transport    [输入] 传输协议，目前仅支持ICE，UDP或者TCP。
+ *      options      [输入] 指向一个有效WhisperSessionOptions结构的指针。
+ * @param
+ *      transport    [输入] 传输协议，目前仅支持ICE，UDP或者TCP。
  *
  * @return
- *     如果成功，返回WishierSession对象的指针，否则返回NULL。
- *     具体错误可以调用whisper_get_error()来获得。
+ *      如果成功，返回WishierSession对象的指针，否则返回NULL。
+ *      具体错误可以调用whisper_get_error()来获得。
  */
 WHISPER_API
-WhisperSession *whisper_session_new(Whisper *whisper, const char *to,
-                                    WhisperTransportType transport);
+WhisperSession *whisper_session_new(Whisper *whisper, const char *address,
+                                    WhisperTransportType transport,
+                                    WhisperTransportOptions *options);
 
 /**
  * \~English
@@ -487,19 +538,84 @@ WhisperSession *whisper_session_new(Whisper *whisper, const char *to,
  * 关闭指定session。销毁所有和session有关资源，包括streams和multiplexers。
  *
  * @param
- *      session     [输入] 指向Whisper客户实例的句柄。
+ *      session     [输入] 指向WhisperSession的句柄。
  */
 WHISPER_API
 void whisper_session_close(WhisperSession *session);
 
+/**
+ * \~English
+ * Get the remote peer id (userid or userid@nodeid) of the session.
+ *
+ * @param
+ *      session     [in] A handle to the Whisper session.
+ * @param
+ *      address     [out] The buffer that will receive the peer address.
+ *                        The buffer size should at least
+ *                        (2 * WHISPER_MAX_ID_LEN + 1) bytes.
+ * @param
+ *      len         [in] The buffer size of appid.
+ *
+ * @return
+ *      The remote peer string address, or NULL if buffer is too small.
+ *
+ * \~Chinese
+ * 获取与指定会话关联的对端标识。
+ *
+ * @param
+ *      session     [输入] 指向WhisperSession的句柄。
+ * @param
+ *      address     [输出] 用来存放会话对端标识的存储空间。
+ *                        存储空间至少要有2*WHISPER_MAX_ID_LEN+1个字节。
+ * @param
+ *      len         [输入] peer存储空间的长度。
+ *
+ * @return
+ *      指向会话对端标识字符串的指针，如果提供的存储空间太小则返回空指针。
+ */
 WHISPER_API
-char *whisper_session_get_peer(WhisperSession *ws, char *peer, size_t size);
+char *whisper_session_get_peer(WhisperSession *session, char *address, size_t len);
 
+/**
+ * \~English
+ * Set the arbitary user data to be associated with the session.
+ *
+ * @param
+ *      session     [in] A handle to the Whisper session.
+ * @param
+ *      userdata    [in] Arbitary user data to be associated with this session.
+ *
+ * \~Chinese
+ * 设置指定会话关联的用户数据块。
+ *
+ * @param
+ *      session     [输入] 指向WhisperSession的句柄。
+ * @param
+ *      userdata    [输入] 指向待关联的用户数据块。
+ */
 WHISPER_API
-void whisper_session_set_userdata(WhisperSession *ws, void *userdata);
+void whisper_session_set_userdata(WhisperSession *session, void *userdata);
 
+/**
+ * \~English
+ * Get the user data associated with the session.
+ *
+ * @param
+ *      session     [in] A handle to the Whisper session.
+ *
+ * @return
+ *      The user data associated with session.
+ *
+ * \~Chinese
+ * 获取指定会话关联的用户数据块。
+ *
+ * @param
+ *      session     [输入] 指向WhisperSession的句柄。
+ * @return
+ *      指定会话关联的用户数据块。
+ */
 WHISPER_API
-void *whisper_session_get_userdata(WhisperSession *ws);
+void *whisper_session_get_userdata(WhisperSession *session);
 
 /**
  * \~English
@@ -529,7 +645,7 @@ void *whisper_session_get_userdata(WhisperSession *ws);
  * WhisperSessionRequestCompleteCallback是回调函数类型。
  *
  * @param
- *      session      [输入] 指向Whisper客户实例的句柄。
+ *      session      [输入] 指向WhisperSession的句柄。
  * @param
  *      status       [输入] 响应的状态码。
  *                         0表示成功，否则表示失败。
@@ -567,7 +683,7 @@ typedef void WhisperSessionRequestCompleteCallback(WhisperSession *session, int 
  * 发送session请求。
  *
  * @param
- *     session       [输入] 指向Whisper客户实例的句柄。
+ *     session       [输入] 指向WhisperSession的句柄。
  * @param
  *     callback      [输入] 指向接收session响应的WhisperSessionRequestCompleteCallback函数。
  * @param
@@ -606,7 +722,7 @@ int whisper_session_request(WhisperSession *session,
  * 函数发送session响应。
  *
  * @param
- *      session      [输入] 指向Whisper客户实例的句柄。
+ *      session      [输入] 指向WhisperSession的句柄。
  * @param
  *      status       [输入] 响应的状态码。
  *                         0表示成功，否则表示失败。
@@ -1000,7 +1116,7 @@ typedef struct WhisperStreamCallbacks {
 } WhisperStreamCallbacks;
 
 #define WHISPER_STREAM_COMPRESS             0x01
-#define WHISPER_STREAM_ENCRYPT              0x02
+#define WHISPER_STREAM_PLAIN                0x02
 #define WHISPER_STREAM_RELIABLE             0x04
 #define WHISPER_STREAM_MULTIPLEXING         0x08
 #define WHISPER_STREAM_PORT_FORWARDING      0x10
@@ -1016,8 +1132,9 @@ typedef struct WhisperStreamCallbacks {
  *   - Multiplexing over UDP
  *   - Multiplexing over TCP like reliable protocol
  *
- *  Application can use options to specify the new stream mode.
- *  Multiplexing over UDP can not provide reliable transport.
+ *  Application can use options to specify the new stream mode. Data
+ *  transferred on stream is defaultly encrypted.  Multiplexing over UDP can
+ *  not provide reliable transport.
  *
  * @param
  *      session     [in] The handle to the WhisperSession.
@@ -1028,8 +1145,8 @@ typedef struct WhisperStreamCallbacks {
  *                       by a bitwise-inclusive OR of flags from the
  *                       following list:
  *
- *                       - WHISPER_STREAM_ENCRYPT
- *                         Enctypted mode.
+ *                       - WHISPER_STREAM_PLAIN
+ *                         Plain mode.
  *                       - WHISPER_STREAM_RELIABLE
  *                         Reliable mode.
  *                       - WHISPER_STREAM_MULTIPLEXING
@@ -1053,12 +1170,13 @@ typedef struct WhisperStreamCallbacks {
  *
  * Whisper stream支持以下几种传输机制：
  *
- *   - 普通/加密UDP数据报传输
- *   - 普通/加密TCP可靠数据流传输
+ *   - 非加密/加密UDP数据报传输
+ *   - 非加密/加密TCP可靠数据流传输
  *   - 基于UDP的多路复用
  *   - 基于TCP可靠传输的多路复用
  *
- *  应用通过参数options来表明添加stream的传输机制。基于UDP的多路复用不能提供可靠传输。
+ *  应用通过参数options来表明添加stream的传输机制，传输数据默认加密。基于UDP的多路复用
+ *  不能提供可靠传输。
  *
  * @param
  *      session     [输入] 指向WhisperSession的句柄。
@@ -1067,8 +1185,8 @@ typedef struct WhisperStreamCallbacks {
  * @param
  *      options     [输入] stream工作模式。该参数通过位操作或者以下的flag来设置：
  *
- *                       - WHISPER_STREAM_ENCRYPT
- *                         加密模式。
+ *                       - WHISPER_STREAM_PLAIN
+ *                         非加密模式。
  *                       - WHISPER_STREAM_RELIABLE
  *                         可靠传输模式。
  *                       - WHISPER_STREAM_MULTIPLEXING
@@ -1260,6 +1378,69 @@ WHISPER_API
 int whisper_stream_get_type(WhisperSession *session, int stream,
         WhisperStreamType *type);
 
+/**
+ * \~English
+ * Get the whisper stream current state.
+ *
+ * @param
+ *      session     [in] The handle to the WhisperSession.
+ * @param
+ *      stream      [in] The stream ID.
+ * @param
+ *      state       [out] The stream state defined in WhisperStreamState.
+ *
+ * @return
+ *      0 on success, or -1 if an error occurred.
+ *      The specific error code can be retrieved by calling
+ *      whisper_get_error().
+ *
+ * \~Chinses
+ * 获取whisper stream当前状态。
+ *
+ * @param
+ *      session     [输入] 指向WhisperSession的句柄。
+ * @param
+ *      stream      [输入] stream id。
+ * @param
+ *      state       [输入] 新stream状态，具体定义WhisperStreamState。
+ *
+ * @return
+ *      0表示成功，-1表示失败。具体错误可以调用whisper_get_error()来获得。
+ */
+WHISPER_API
+int whisper_stream_get_state(WhisperSession *session, int stream,
+        WhisperStreamState *state);
+
+/**
+ * \~English
+ * Get the whisper stream transport information.
+ *
+ * @param
+ *      session     [in] The handle to the WhisperSession.
+ * @param
+ *      stream      [in] The stream ID.
+ * @param
+ *      info        [out] The stream transport information defined in
+ *                        WhisperTransportInfo.
+ *
+ * @return
+ *      0 on success, or -1 if an error occurred.
+ *      The specific error code can be retrieved by calling
+ *      whisper_get_error().
+ *
+ * \~Chinses
+ * 获取whisper stream当前传输通道信息
+ *
+ * @param
+ *      session     [输入] 指向WhisperSession的句柄。
+ * @param
+ *      stream      [输入] stream id。
+ * @param
+ *      state       [输入] 指向传输通道信息的内存块，具体定义WhisperTransportInfo。
+ *
+ * @return
+ *      0表示成功，-1表示失败。具体错误可以调用whisper_get_error()来获得。
+ */
 WHISPER_API
 int whisper_stream_get_transport_info(WhisperSession *session, int stream,
                                       WhisperTransportInfo *info);
