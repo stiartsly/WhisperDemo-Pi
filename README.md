@@ -72,4 +72,4 @@ TODO:
 
 ## License
 
-Whisper Demo påroject source code files are made available under the MIT License, located in the LICENSE file.
+Whisper Demo project source code files are made available under the MIT License, located in the LICENSE file.
