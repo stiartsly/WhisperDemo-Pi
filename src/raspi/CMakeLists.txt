@@ -13,5 +13,5 @@ add_library(raspi SHARED
 )
 
 target_link_libraries(raspi
-    wiringPI
+    wiringPi
 )
