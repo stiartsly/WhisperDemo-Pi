@@ -10,7 +10,7 @@ Two types of whisper network would be supported:
  * Managed whisper network (or centralized whisper network)
  * Decentralized whisper network
 
-## Feaures:
+## Features:
 
 The items for remote control currently includes:
 
