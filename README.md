@@ -1,27 +1,28 @@
 Whisper Demo Run on RaspberryPi
-====================================
+===============================
 
-Whisper Demo is an easy-understand application to show what Whisper framework can do over whisper network. It shows you can use Apps on Android/iOS/Raspberry to control each other with p2p technology.
+Whisper Demo is an exemplary and easy-understand app to show what whisper framework can do over whisper network. It shows you can use apps on Android/iOS/Raspberry to control remote device (vice versa) based on P2P technology.
 
 ## Whisper network types
 
-Currently, 2 types of whisper network supprted:
+Two types of whisper network would be supported:
 
- * Managed whisper network
- * Decentralzied whisper network
+ * Managed whisper network (or centralized whisper network)
+ * Decentralized whisper network
 
 ## Feaures:
 
 The items for remote control currently includes:
 
-- Turn on/off torch (or light)
+- Turn on/off torch (or flashlight)
+- Increase/Decrease screen backgroud light
 - Turn on/off ringtone
 - Increase/Decrease ringtone volume
 - Turn on/off camera video
 
 ## Build from source
 
-Run follwing commands for compilation on MacOS or Linux:
+Run following commands for compilation on MacOS or Linux:
 
 ```
 $ git clone https://github.com/stiartsly/WhisperDemo-Pi.git wdemo
@@ -45,14 +46,14 @@ $ make
 
 ## Build dependencies
 
-Before buiding whisper demo, you have to download and build the following dependencies:
+Before building whisper demo, you have to download and build the following dependencies:
 
 * whisper framework
 * libconfuse
 
-and copy distributions to "deps" direcotry. 
+and copy distributions to **deps** direcotry.
 
-The structure of "deps" derectory should looks as listed below:
+The structure of **deps** derectory should look as listed below:
 
 ```
 |-- deps
@@ -68,8 +69,18 @@ The structure of "deps" derectory should looks as listed below:
 ```
 
 ## Deploy && Run
-TODO: 
+
+Run the following command to start wdemo:
+
+```shell
+$ wdemo -c YOUR-CONFIG-FILE.conf
+```
+or run command with option **-h** to get help information
+
+```shell
+$ wdemo -h
+```
 
 ## License
 
-Whisper Demo project source code files are made available under the MIT License, located in the LICENSE file.
+MIT
